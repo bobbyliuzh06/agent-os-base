@@ -8,10 +8,8 @@ node_modules/
 
 # 项目侧 WORKSPACE 不进 BASE 仓库（BASE 是模板，不含实例数据）
 WORKSPACE/raw/*
-WORKSPACE/wiki/patterns/*
-WORKSPACE/skills/*
 !WORKSPACE/raw/.gitkeep
-!WORKSPACE/wiki/patterns/.gitkeep
+WORKSPACE/skills/*
 !WORKSPACE/skills/.gitkeep
 
 # IDE
