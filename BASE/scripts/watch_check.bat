@@ -24,3 +24,4 @@ echo.
 echo ===== watch end =====
 endlocal
 call "%~dp0nightly_check.bat"
+python "%~dp0posture_check.py" --repo "%AGENT_OS_ROOT%" --out-dir "%AGENT_OS_ROOT%\BASE\regression-runs\posture-daily" >nul 2>&1
