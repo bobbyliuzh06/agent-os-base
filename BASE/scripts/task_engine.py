@@ -19,7 +19,7 @@ def _read_req(task_dir):
     return p.read_text(encoding="utf-8") if p.exists() else ""
 
 def run_once(task_id, dry=True, live=False, mock=True, model="deepseek-v4-flash",
-             no_think=False, apply_code=False, max_iter=1):
+             no_think=False, apply_code=False, reasoning=None, max_iter=1):
     C=_lc(); td=C.tasks_dir/task_id
     if not td.exists():
         print("NO_TASK", task_id); return 1
@@ -37,7 +37,7 @@ def run_once(task_id, dry=True, live=False, mock=True, model="deepseek-v4-flash"
         use_live = live and not mock
         a("TASK=%s dry=%s live=%s model=%s time=%s"%(task_id, dry, use_live, model if use_live else "mock", ts))
         # 1 propose：proposer 适配器（mock 或 deepseek），只产出结构化草案 JSON
-        prop=_propose(req, task_id, live=use_live, model=model, thinking=not no_think)
+        prop=_propose(req, task_id, live=use_live, model=model, thinking=not no_think, reasoning=reasoning)
         prop_path=ev/("propose-%s.json"%ts)
         prop_path.write_text(json.dumps(prop,ensure_ascii=False,indent=2),encoding="utf-8")
         a("PROPOSE=%s model=%s"%(prop.get("proposal_id"), prop.get("model")))
@@ -84,11 +84,11 @@ def run_once(task_id, dry=True, live=False, mock=True, model="deepseek-v4-flash"
         lock.release()
 
 def evolve(task_id, iterations=3, dry=True, live=False, mock=True, model="deepseek-v4-flash",
-           no_think=False, apply_code=False):
+           no_think=False, apply_code=False, reasoning=None):
     # 常驻轻量：多次 run_once，写 task-evolve；不回 BASE
     for i in range(iterations):
         rc=run_once(task_id, dry=dry, live=live, mock=mock, model=model,
-                    no_think=no_think, apply_code=apply_code)
+                    no_think=no_think, apply_code=apply_code, reasoning=reasoning)
         if rc!=0: return rc
     print("EVOLVE_DONE task=%s iterations=%d (task-local only)"%(task_id,iterations))
     return 0

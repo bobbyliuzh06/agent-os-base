@@ -45,9 +45,17 @@ def mock_propose(req_text, task_id):
         "tool_calls":[]  # mock 不允许任何工具调用
     }
 
-def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=True, api_key=None, base_url=None, timeout=60):
+def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=False, reasoning=None, api_key=None, base_url=None, timeout=60):
     if not api_key:
         api_key = os.environ.get("DEEPSEEK_API_KEY")
+    if not api_key:
+        # winreg HKCU\Environment 兜底；仅进程内存使用，不打印、不写文件
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as k:
+                api_key, _ = winreg.QueryValueEx(k, "DEEPSEEK_API_KEY")
+        except Exception:
+            api_key = ""
     if not api_key:
         raise RuntimeError("no DEEPSEEK_API_KEY; 回退 mock 或显式 --mock")
     base_url = base_url or "https://api.deepseek.com"
@@ -58,16 +66,27 @@ def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=True
     client = OpenAI(api_key=api_key, base_url=base_url)
     system = (
         "你是 agent-os 任务提案器。仅输出 JSON，绝不直接执行。字段必须含：" + ",".join(SCHEMA_REQUIRED) +
-        "。额外字段 tool_calls 只能是空数组；若方案需要改 BASE/META/全局调度/删除文件/写密钥，"
+        " 和 tool_calls（恒为空数组）。" +
+        "若方案需要改 BASE/META/config/PENDING/schtasks/全局调度/删除文件/写密钥，"
         "必须把 base_change_required 置 true 并在 scope_out 说明，由规则层人工裁决，不得自行给出写路径或命令。"
-        "所有产物路径必须以 tasks/<task_id>/task-evolve/ 开头。"
+        "禁止输出任何密钥；所有产物路径必须以 tasks/<task_id>/task-evolve/ 开头。"
     )
     user = "TASK_ID=%s\nREQ:\n%s\n请按上述 schema 输出纯 JSON。" % (task_id, req_text)
+    # 温度自适应：代码/修复/单测类 0.0；数据分析类 1.0；结构化提案默认 0.2
+    _low = (req_text or "").lower()
+    if any(k in _low for k in ["代码", "修复", "单测", "bug", "code", "fix", "test"]):
+        temp = 0.0
+    elif any(k in _low for k in ["数据分析", "分析报告", "报表", "analysis", "data"]):
+        temp = 1.0
+    else:
+        temp = 0.2
     kwargs = dict(model=model, messages=[{"role":"system","content":system},{"role":"user","content":user}],
-                  temperature=0.2, max_tokens=2048, stream=False,
+                  temperature=temp, max_tokens=2048, stream=False,
                   response_format={"type":"json_object"})
-    if thinking and "pro" in model:
-        kwargs["reasoning_effort"]="high"; kwargs["extra_body"]={"thinking":{"type":"enabled"}}
+    # 仅显式 --reasoning 且 pro 模型才传思考参数；简单任务默认不传
+    if reasoning and "pro" in model:
+        kwargs["reasoning_effort"] = reasoning
+        kwargs["extra_body"] = {"thinking":{"type":"enabled"}}
     r = client.chat.completions.create(**kwargs)
     content = r.choices[0].message.content or "{}"
     data = json.loads(content)
@@ -76,12 +95,27 @@ def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=True
     for k in SCHEMA_REQUIRED:
         if k not in data: data[k] = (False if k=="base_change_required" else [])
     data.setdefault("tool_calls", [])
+    # 规范化 deliverables：dict 形式（{path,desc}）→ 纯路径字符串数组；desc 并入 deliverable_descs
+    raw_del = data.get("deliverables") or []
+    norm_del, descs = [], []
+    for d in raw_del:
+        if isinstance(d, dict):
+            p = d.get("path") or d.get("file")
+            if isinstance(p, str) and p.strip():
+                norm_del.append(p.strip())
+                if d.get("desc"):
+                    descs.append("%s: %s" % (p.strip(), str(d["desc"])[:80]))
+        elif isinstance(d, str) and d.strip():
+            norm_del.append(d.strip())
+    data["deliverables"] = norm_del
+    if descs:
+        data["deliverable_descs"] = descs
     return data
 
-def propose(req_text, task_id, live=False, model="deepseek-v4-flash", thinking=True):
+def propose(req_text, task_id, live=False, model="deepseek-v4-flash", thinking=False, reasoning=None):
     if live:
         try:
-            return deepseek_propose(req_text, task_id, model=model, thinking=thinking)
+            return deepseek_propose(req_text, task_id, model=model, thinking=thinking, reasoning=reasoning)
         except Exception as e:
             return {"proposal_id":"prop-%s-%s"%(task_id,_now()),"model":"error-fallback-mock",
                     "summary":"live失败回退mock: %s"%e, "scope_in":["tasks/%s"%task_id],
