@@ -1,0 +1,46 @@
+{
+  "_comment": "Agent-OS base 配置骨架（v0.4 契约，当前仅文档约定，尚未被脚本读取）。所有路径后续通过 get_config() 参数化。",
+  "version": "0.4.0-roadmap",
+  "paths": {
+    "base_dir": "${AGENT_OS_ROOT}/base",
+    "profile_dir": "${AGENT_OS_ROOT}/profile",
+    "tasks_dir": "${AGENT_OS_ROOT}/tasks",
+    "registry": "${AGENT_OS_ROOT}/tasks/registry.json"
+  },
+  "env": {
+    "api_key_source": ["winreg:DEEPSEEK_API_KEY", "env:DEEPSEEK_API_KEY", ".env"],
+    "key_env_name": "DEEPSEEK_API_KEY"
+  },
+  "schedule": {
+    "base_evolve": {
+      "task_name": "AgentOS_EvolveDispatch",
+      "interval_hours": 4,
+      "enabled": true
+    },
+    "watch": {
+      "task_name": "AgentOS_WatchCheck",
+      "interval": "daily",
+      "enabled": true
+    }
+  },
+  "task_layer": {
+    "enabled": false,
+    "commands": ["sync", "new", "run", "watch", "evolve", "doctor", "archive"],
+    "single_base_only": true,
+    "registry_dedup": true,
+    "per_task_lock": true
+  },
+  "github": {
+    "enabled": false,
+    "mode": "git",
+    "repo_url": "",
+    "branch": "main",
+    "base_subtree": "BASE",
+    "release_asset_pattern": "agent-os-base-*.zip",
+    "token_env": "GH_TOKEN",
+    "allow_dirty": false,
+    "backup_dir": "BASE/regression-runs/sync-backup",
+    "verify_checksum": true,
+    "only_base_subtree": true
+  }
+}
