@@ -1,2 +1,0 @@
-@echo off
-python D:\agent-os\BASE\scripts\evolve_dispatch.py >> D:\agent-os\BASE\regression-runs\dispatch.log 2>&1

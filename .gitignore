@@ -5,5 +5,12 @@ regression-runs/
 __pycache__/
 *.pyc
 .step*.bak
+*.bak
+*.bak2
+*.bak.*
+*.backup
+*.tmp
+*~
+BASE/scripts/*.step*.bak
 .auto_merge_on
 merge_acks/
