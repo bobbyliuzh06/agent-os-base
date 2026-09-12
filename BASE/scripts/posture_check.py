@@ -21,6 +21,40 @@ from tag_audit import _snapshot_local
 _C = _lc()
 _DEFAULT_REPO = str(_C.root)
 _DEFAULT_OUT = str(pathlib.Path(_C.root) / "BASE" / "regression-runs" / "posture-daily")
+_DEFAULT_ALLOW = str(pathlib.Path(_C.root) / "BASE" / "scripts" / "posture_allow.yaml")
+
+_EMPTY_ALLOW = {
+    "known_local_only_tags": [],
+    "max_acceptable_ahead": 0,
+    "ignore_issue_types": [],
+    "never_ignore": [
+        "remote_main_moved", "head_diverges", "remote_only_unknown_tag",
+        "diverged_tag", "local_only_unknown_tag", "uncommitted_changes"],
+}
+
+
+def load_allow(path):
+    """读取白名单（.yaml 优先，缺 PyYAML 时回退 .json）。缺失/损坏返回空规则。"""
+    p = pathlib.Path(path) if path else None
+    try:
+        if p is not None and p.exists():
+            text = p.read_text(encoding="utf-8")
+            if p.suffix.lower() in (".yaml", ".yml"):
+                import yaml
+                data = yaml.safe_load(text) or {}
+            else:
+                data = json.loads(text) if text.strip() else {}
+            if not isinstance(data, dict):
+                return dict(_EMPTY_ALLOW)
+            out = dict(_EMPTY_ALLOW)
+            out["known_local_only_tags"] = list(data.get("known_local_only_tags") or [])
+            out["max_acceptable_ahead"] = int(data.get("max_acceptable_ahead", 0) or 0)
+            out["ignore_issue_types"] = list(data.get("ignore_issue_types") or [])
+            out["never_ignore"] = list(data.get("never_ignore") or _EMPTY_ALLOW["never_ignore"])
+            return out
+    except Exception:
+        pass
+    return dict(_EMPTY_ALLOW)
 
 
 def _run(args, repo):
@@ -44,7 +78,11 @@ def _parse_ls_remote_tags(text):
     return tags, peels
 
 
-def run_posture(repo, out_dir):
+def run_posture(repo, out_dir, allow_file=None):
+    allow = load_allow(allow_file)
+    known = set(allow.get("known_local_only_tags") or [])
+    ignore_types = set(allow.get("ignore_issue_types") or [])
+    limit = allow.get("max_acceptable_ahead", 0)
     r = _run(["rev-parse", "HEAD"], repo)
     local_head = r.stdout.strip() if r.returncode == 0 else None
     r = _run(["rev-parse", "origin/main"], repo)
@@ -64,26 +102,38 @@ def run_posture(repo, out_dir):
         if remote_tags[name] != local_snap[name]["obj"])
 
     ahead, behind = 0, 0
-    issues = []
-    if local_origin_main is None:
-        issues.append("local origin/main missing")
-    else:
+    if local_origin_main is not None:
         r = _run(["rev-list", "--count", "%s..HEAD" % local_origin_main], repo)
         ahead = int(r.stdout.strip() or 0) if r.returncode == 0 else 0
         r = _run(["rev-list", "--count", "HEAD..%s" % local_origin_main], repo)
         behind = int(r.stdout.strip() or 0) if r.returncode == 0 else 0
-    if remote_main and local_origin_main and remote_main != local_origin_main:
-        issues.append("remote main moved since last fetch (need fetch to update local remote-tracking ref)")
-    if remote_main and remote_main != local_head:
-        issues.append("local HEAD diverges from remote main: ahead=%d behind=%d" % (ahead, behind))
-    if remote_only:
-        issues.append("remote-only tags: %s" % remote_only)
-    if local_only:
-        issues.append("local-only tags: %s" % local_only)
-    if diverged:
-        issues.append("diverged tags: %s" % diverged)
+
+    # ---- 白名单分级：issues（真异常）与 infos（已知/可接受，降噪）----
+    issues, infos = [], []
+    known_local = [t for t in local_only if t in known]
+    unknown_local = [t for t in local_only if t not in known]
+    if known_local:
+        if "local_only_known" in ignore_types:
+            infos.append({"type": "local_only_known", "tags": known_local,
+                          "msg": "known local-only tags (whitelisted), not published"})
+        else:
+            issues += [{"type": "local_only_tag", "tag": t} for t in known_local]
+    issues += [{"type": "local_only_unknown_tag", "tag": t} for t in unknown_local]  # 永不抑制
     if ahead > 0:
-        issues.append("local ahead by %d commits" % ahead)
+        if ahead <= limit and "ahead_within_limit" in ignore_types:
+            infos.append({"type": "ahead_within_limit", "ahead": ahead, "limit": limit})
+        else:
+            issues.append({"type": "local_ahead", "ahead": ahead, "limit": limit})
+    # ---- 永不抑制项 ----
+    if local_origin_main is None:
+        issues.append({"type": "origin_main_missing"})
+    if remote_main and local_origin_main and remote_main != local_origin_main:
+        issues.append({"type": "remote_main_moved",
+                       "remote_main": remote_main, "local_origin_main": local_origin_main})
+    if remote_main and remote_main != local_head:
+        issues.append({"type": "head_diverges", "ahead": ahead, "behind": behind})
+    issues += [{"type": "remote_only_unknown_tag", "tag": t} for t in remote_only]
+    issues += [{"type": "diverged_tag", "tag": t} for t in diverged]
 
     healthy = len(issues) == 0
     rec = {
@@ -98,7 +148,14 @@ def run_posture(repo, out_dir):
         "remote_only_tags": remote_only,
         "diverged_tags": diverged,
         "issues": issues,
+        "infos": infos,
         "healthy": healthy,
+        "allow": {
+            "known_local_only_tags_count": len(known),
+            "max_acceptable_ahead": limit,
+            "ignore_issue_types": sorted(ignore_types),
+            "never_ignore": sorted(allow.get("never_ignore") or []),
+        },
         "command": "posture_check.py --repo %s --out-dir %s" % (repo, out_dir),
         "read_only": True,
     }
@@ -111,8 +168,12 @@ def run_posture(repo, out_dir):
         json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")
     print("LOCAL_HEAD=%s REMOTE_MAIN=%s AHEAD=%d BEHIND=%d" % (
         (local_head or "")[:12], (remote_main or "")[:12], ahead, behind))
-    print("LOCAL_ONLY=%s REMOTE_ONLY=%s DIVERGED=%s ISSUES=%d HEALTHY=%s" % (
-        local_only, remote_only, diverged, len(issues), healthy))
+    print("LOCAL_ONLY=%s REMOTE_ONLY=%s DIVERGED=%s" % (local_only, remote_only, diverged))
+    print("ISSUES=%d INFOS=%d HEALTHY=%s" % (len(issues), len(infos), healthy))
+    for i in infos:
+        print("  INFO %s" % json.dumps(i, ensure_ascii=False))
+    for i in issues:
+        print("  ISSUE %s" % json.dumps(i, ensure_ascii=False))
     return rec
 
 
@@ -125,8 +186,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=_DEFAULT_REPO)
     ap.add_argument("--out-dir", default=_DEFAULT_OUT)
+    ap.add_argument("--allow-file", default=_DEFAULT_ALLOW)
     ns = ap.parse_args(argv)
-    run_posture(ns.repo, ns.out_dir)
+    run_posture(ns.repo, ns.out_dir, allow_file=ns.allow_file)
     return 0
 
 

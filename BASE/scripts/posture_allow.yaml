@@ -1,0 +1,19 @@
+# posture_check 白名单：仅降低 known/acceptable 项的告警级别，不放松安全判定
+known_local_only_tags:
+  - v0.2.0              # lightweight，本地里程碑，永不上云
+  - v0.3.0-base          # 本地历史快照
+  - v0.4.0-base          # 功能快照（若日后上云，从此列表移除）
+  - v0.4.1-sandbox-live  # sandbox 功能集
+  - v0.4.2-sandbox-hard  # sand-hard 功能集
+max_acceptable_ahead: 0      # 发版后应为 0；本地开发可临时调高（仅降级为 info，不消除记录）
+ignore_issue_types:           # 命中白名单后从 issues 移除、改记 infos
+  - local_only_known
+  - ahead_within_limit
+# 以下类型永不被白名单抑制（安全底线）
+never_ignore:
+  - remote_main_moved
+  - head_diverges
+  - remote_only_unknown_tag
+  - diverged_tag
+  - local_only_unknown_tag
+  - uncommitted_changes
