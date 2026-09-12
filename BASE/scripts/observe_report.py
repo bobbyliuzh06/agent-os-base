@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, re, glob, csv, sys
+import os, re, glob, csv, sys, subprocess, shutil
 from datetime import datetime
 
 BASE="D:/agent-os"
@@ -8,6 +8,51 @@ PENDING=os.path.join(BASE,"PENDING")
 LOG=os.path.join(BASE,"BASE","regression-runs","dispatch.log")
 CSV=os.path.join(BASE,"BASE","regression-runs","observe.csv")
 AUTO_READY=os.path.join(PENDING,"auto_ready.md")
+
+CSV_HEADER=["time","reviews","gates","propose_rc","gate_rc","post_rc","cleanup_rc",
+            "unknown","alerts_total","decision","accept_low_candidates","git_sha"]
+
+def current_git_sha():
+    try:
+        p=subprocess.run(["git","-C",BASE,"rev-parse","--short","HEAD"],
+                         capture_output=True,text=True,timeout=30)
+        out=(p.stdout or "").strip()
+        return out.splitlines()[0].strip() if out else "na"
+    except Exception:
+        return "na"
+
+def migrate_csv_if_needed():
+    """observe.csv 无 git_sha 列时迁移：备份原文件，旧行补 ,na，字段数不足的行丢弃并返回。"""
+    dropped=[]
+    if not os.path.isfile(CSV):
+        return dropped
+    try:
+        with open(CSV,"r",encoding="utf-8",errors="replace") as f:
+            lines=f.read().splitlines()
+    except Exception:
+        return dropped
+    if not lines:
+        return dropped
+    first=lines[0]
+    if "git_sha" in first.split(","):
+        return dropped
+    try:
+        shutil.copy(CSV, CSV+".step16.bak")
+    except Exception:
+        pass
+    ncols=len(first.split(","))
+    out=[first+",git_sha"]
+    for ln in lines[1:]:
+        if not ln.strip():
+            continue
+        parts=[x.strip() for x in ln.split(",")]
+        if len(parts)<ncols:
+            dropped.append(ln)
+            continue
+        out.append(ln+",na")
+    with open(CSV,"w",encoding="utf-8",newline="") as f:
+        f.write("\n".join(out)+"\n")
+    return dropped
 
 def log(s):
     print(s, flush=True)
@@ -83,14 +128,19 @@ def main():
     if unknown_list: reasons.append("unknown_gates="+str(len(unknown_list)))
     auto_on=os.path.exists(os.path.join(BASE,"BASE","META",".auto_merge_on"))
     ready = bool(accept_low) and not reasons and auto_on
+    git_sha=current_git_sha()
+    dropped=migrate_csv_if_needed()
+    if dropped:
+        log("CSV_MIGRATE dropped_rows=%d"%(len(dropped)))
+        for d in dropped:
+            log("  DROPPED: "+d[:200])
     row=[now,n_prop,n_gate,prop_rc,gate_rc,post_rc,clean_rc,len(unknown_list),alerts,
-         "ready" if ready else "manual", ";".join(r[0] for r in accept_low)]
+         "ready" if ready else "manual", ";".join(r[0] for r in accept_low), git_sha]
     write_header=not os.path.isfile(CSV)
     with open(CSV,"a",encoding="utf-8",newline="") as f:
         w=csv.writer(f)
         if write_header:
-            w.writerow(["time","reviews","gates","propose_rc","gate_rc","post_rc","cleanup_rc",
-                        "unknown","alerts_total","decision","accept_low_candidates"])
+            w.writerow(CSV_HEADER)
         w.writerow(row)
     if accept_low:
         with open(AUTO_READY,"w",encoding="utf-8") as f:
@@ -104,8 +154,8 @@ def main():
         if os.path.isfile(AUTO_READY):
             try: os.remove(AUTO_READY)
             except Exception: pass
-    log("OBSERVE now=%s reviews=%d gates=%d unknown=%d alerts=%d decision=%s auto_on=%s"%
-        (now,n_prop,n_gate,len(unknown_list),alerts,"ready" if ready else "manual",auto_on))
+    log("OBSERVE now=%s reviews=%d gates=%d unknown=%d alerts=%d decision=%s auto_on=%s git_sha=%s"%
+        (now,n_prop,n_gate,len(unknown_list),alerts,"ready" if ready else "manual",auto_on,git_sha))
     if accept_low:
         log("accept_low_candidates="+";".join(r[0] for r in accept_low))
     if unknown_list:
