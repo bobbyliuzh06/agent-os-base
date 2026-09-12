@@ -1,0 +1,12 @@
+{
+  "default_model": "deepseek-v4-flash",
+  "code_model": "deepseek-v4-pro",
+  "base_url": "https://api.deepseek.com",
+  "thinking": {"enabled": false, "reasoning_effort": "low"},
+  "code_thinking": {"enabled": true, "reasoning_effort": "high"},
+  "temperature": {"structured": 0.2, "analysis": 1.0},
+  "max_tokens": {"structured": 2048, "code": 4096},
+  "json_mode": true,
+  "fail_fallback_mock": true,
+  "key_sources": ["env:DEEPSEEK_API_KEY", "winreg:HKCU\\Environment/DEEPSEEK_API_KEY"]
+}

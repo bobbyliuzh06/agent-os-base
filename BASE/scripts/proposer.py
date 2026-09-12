@@ -45,20 +45,111 @@ def mock_propose(req_text, task_id):
         "tool_calls":[]  # mock 不允许任何工具调用
     }
 
-def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=False, reasoning=None, api_key=None, base_url=None, timeout=60):
-    if not api_key:
-        api_key = os.environ.get("DEEPSEEK_API_KEY")
-    if not api_key:
-        # winreg HKCU\Environment 兜底；仅进程内存使用，不打印、不写文件
-        try:
-            import winreg
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as k:
-                api_key, _ = winreg.QueryValueEx(k, "DEEPSEEK_API_KEY")
-        except Exception:
-            api_key = ""
+_CONF_DEFAULTS = {
+    "default_model": "deepseek-v4-flash",
+    "code_model": "deepseek-v4-pro",
+    "base_url": "https://api.deepseek.com",
+    "thinking": {"enabled": False, "reasoning_effort": "low"},
+    "code_thinking": {"enabled": True, "reasoning_effort": "high"},
+    "temperature": {"structured": 0.2, "analysis": 1.0},
+    "max_tokens": {"structured": 2048, "code": 4096},
+    "json_mode": True,
+    "fail_fallback_mock": True,
+    "key_sources": ["env:DEEPSEEK_API_KEY", "winreg:HKCU\\Environment/DEEPSEEK_API_KEY"],
+}
+
+def _merge_conf(base, over):
+    for k, v in (over or {}).items():
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            _merge_conf(base[k], v)
+        else:
+            base[k] = v
+
+def load_proposer_config():
+    """读取 BASE/META/proposer.config.json；缺失/损坏用内嵌默认，不报错。"""
+    conf = json.loads(json.dumps(_CONF_DEFAULTS))
+    try:
+        C = _lc()
+        p = Path(C.meta_dir) / "proposer.config.json"
+        if p.exists():
+            _merge_conf(conf, json.loads(p.read_text(encoding="utf-8")))
+    except Exception:
+        pass
+    return conf
+
+def _read_key_from_registry():
+    try:
+        import winreg
+        for hive, sub in [(winreg.HKEY_CURRENT_USER, "Environment"),
+                          (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")]:
+            try:
+                with winreg.OpenKey(hive, sub) as key:
+                    val, _ = winreg.QueryValueEx(key, "DEEPSEEK_API_KEY")
+                    if val:
+                        return str(val)
+            except Exception:
+                pass
+    except Exception:
+        pass
+    return ""
+
+def _resolve_api_key(api_key):
+    """env → winreg；仅进程内存使用，不打印、不写文件。"""
+    if api_key:
+        return api_key
+    key = os.environ.get("DEEPSEEK_API_KEY", "")
+    return key or _read_key_from_registry()
+
+def _pick_proposer(conf, req_text, model, thinking, reasoning, no_think, temperature):
+    low = (req_text or "").lower()
+    if any(k in low for k in ["代码", "修复", "单测", "实现", "bug", "code", "fix", "test"]):
+        kind = "code"
+    elif any(k in low for k in ["分析", "统计", "数据处理", "数据分析", "analysis", "data"]):
+        kind = "analysis"
+    else:
+        kind = "structured"
+    use_model = model or (conf["code_model"] if kind == "code" else conf["default_model"])
+    if temperature is not None:
+        use_temp = temperature
+    elif kind == "code":
+        # V4：thinking profile 不写 temperature；code 无思考时才用确定性温度
+        use_temp = conf["temperature"].get("code") if "code" in conf.get("temperature", {}) else 0.0
+    else:
+        use_temp = conf["temperature"].get(kind, 0.2)
+    use_tokens = conf["max_tokens"].get("code" if kind == "code" else "structured", 2048)
+    th = conf["code_thinking"] if kind == "code" else conf["thinking"]
+    th_enabled = bool(th.get("enabled", False)) and "pro" in use_model and not no_think and thinking
+    th_effort = reasoning or th.get("reasoning_effort", "low")
+    if th_effort not in ("low", "high", "max"):
+        th_effort = th.get("reasoning_effort", "low")
+    return {"kind": kind, "model": use_model, "temperature": use_temp, "max_tokens": use_tokens,
+            "thinking": th_enabled, "reasoning_effort": th_effort, "json_mode": bool(conf.get("json_mode", True)),
+            "base_url": conf.get("base_url") or "https://api.deepseek.com"}
+
+def _build_request_kwargs(pick, system, user):
+    """V4 请求体：thinking 开启 → 不写 temperature/top_p，只发 reasoning_effort + thinking。"""
+    kwargs = {"model": pick["model"],
+              "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+              "max_tokens": pick["max_tokens"], "stream": False,
+              "response_format": {"type": "json_object"}}
+    if pick["thinking"]:
+        kwargs["reasoning_effort"] = pick["reasoning_effort"]
+        kwargs["extra_body"] = {"thinking": {"type": "enabled"}}
+    else:
+        kwargs["temperature"] = pick["temperature"]
+    return kwargs
+
+def deepseek_propose(req_text, task_id, model="", thinking=True, reasoning=None, no_think=False,
+                     temperature=None, api_key=None, base_url=None, timeout=60):
+    conf = load_proposer_config()
+    pick = _pick_proposer(conf, req_text, model, thinking, reasoning, no_think, temperature)
+    print("PROPOSER_CFG kind=%s model=%s temperature=%s thinking=%s reasoning=%s max_tokens=%s json_mode=%s (脱敏，无密钥)" % (
+        pick["kind"], pick["model"], pick["temperature"], pick["thinking"], pick["reasoning_effort"],
+        pick["max_tokens"], pick["json_mode"]))
+    api_key = _resolve_api_key(api_key)
     if not api_key:
         raise RuntimeError("no DEEPSEEK_API_KEY; 回退 mock 或显式 --mock")
-    base_url = base_url or "https://api.deepseek.com"
+    base_url = base_url or pick["base_url"]
     try:
         from openai import OpenAI
     except ImportError:
@@ -72,26 +163,13 @@ def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=Fals
         "禁止输出任何密钥；所有产物路径必须以 tasks/<task_id>/task-evolve/ 开头。"
     )
     user = "TASK_ID=%s\nREQ:\n%s\n请按上述 schema 输出纯 JSON。" % (task_id, req_text)
-    # 温度自适应：代码/修复/单测类 0.0；数据分析类 1.0；结构化提案默认 0.2
-    _low = (req_text or "").lower()
-    if any(k in _low for k in ["代码", "修复", "单测", "bug", "code", "fix", "test"]):
-        temp = 0.0
-    elif any(k in _low for k in ["数据分析", "分析报告", "报表", "analysis", "data"]):
-        temp = 1.0
-    else:
-        temp = 0.2
-    kwargs = dict(model=model, messages=[{"role":"system","content":system},{"role":"user","content":user}],
-                  temperature=temp, max_tokens=2048, stream=False,
-                  response_format={"type":"json_object"})
-    # 仅显式 --reasoning 且 pro 模型才传思考参数；简单任务默认不传
-    if reasoning and "pro" in model:
-        kwargs["reasoning_effort"] = reasoning
-        kwargs["extra_body"] = {"thinking":{"type":"enabled"}}
+    # V4：thinking 开启的 profile 不写 temperature/top_p（见 _build_request_kwargs）
+    kwargs = _build_request_kwargs(pick, system, user)
     r = client.chat.completions.create(**kwargs)
     content = r.choices[0].message.content or "{}"
     data = json.loads(content)
     data["proposal_id"] = "prop-%s-%s" % (task_id, _now())
-    data["model"] = model
+    data["model"] = pick["model"]
     for k in SCHEMA_REQUIRED:
         if k not in data: data[k] = (False if k=="base_change_required" else [])
     data.setdefault("tool_calls", [])
@@ -112,10 +190,11 @@ def deepseek_propose(req_text, task_id, model="deepseek-v4-flash", thinking=Fals
         data["deliverable_descs"] = descs
     return data
 
-def propose(req_text, task_id, live=False, model="deepseek-v4-flash", thinking=False, reasoning=None):
+def propose(req_text, task_id, live=False, model="", thinking=True, reasoning=None, no_think=False, temperature=None):
     if live:
         try:
-            return deepseek_propose(req_text, task_id, model=model, thinking=thinking, reasoning=reasoning)
+            return deepseek_propose(req_text, task_id, model=model, thinking=thinking,
+                                    reasoning=reasoning, no_think=no_think, temperature=temperature)
         except Exception as e:
             return {"proposal_id":"prop-%s-%s"%(task_id,_now()),"model":"error-fallback-mock",
                     "summary":"live失败回退mock: %s"%e, "scope_in":["tasks/%s"%task_id],
