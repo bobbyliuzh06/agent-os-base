@@ -1,0 +1,43 @@
+# 只回归、不合并不发布（模板，当前未推远程故不触发）
+name: release-check
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+    paths:
+      - 'BASE/scripts/**'
+      - 'tests/**'
+      - 'BASE/META/config.json'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: deps
+        run: pip install openai pytest
+      - name: pytest
+        run: python -m pytest tests/test_gate_rules.py -q
+      - name: scan
+        run: python BASE/scripts/scan_hardcoded.py
+      - name: doctor
+        run: python BASE/scripts/cmd_doctor.py
+      - name: watch
+        run: python BASE/scripts/cmd_watch.py
+      - name: sync-check
+        run: python BASE/scripts/cmd_sync.py --check
+
+  # 发布仅人工触发；真实上传由人工在 GitHub Release 页面完成，
+  # 或由单独受密 workflow 使用 GH_TOKEN 调用 cmd_publish.py --yes --repo ... --gh-upload
+  publish-manual:
+    needs: test
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "publish 仅人工：本地跑 cmd_publish.py --dry 生成 asset；上传由人工完成，不在此自动执行"

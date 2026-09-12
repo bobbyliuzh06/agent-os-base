@@ -15,6 +15,7 @@ if /i "%~1"=="run"       goto run
 if /i "%~1"=="watch"     goto watch
 if /i "%~1"=="evolve"    goto evolve
 if /i "%~1"=="doctor"    goto doctor
+if /i "%~1"=="publish"   goto publish
 if /i "%~1"=="archive"   goto notimpl
 if /i "%~1"=="help"      goto help
 goto help
@@ -73,6 +74,13 @@ set "ARGS=%*"
 set "ARGS=%ARGS:* =%"
 if "%ARGS%"=="%~1" set "ARGS="
 %PY% "%SCR%/cmd_doctor.py" %ARGS%
+goto end
+
+:publish
+set "ARGS=%*"
+set "ARGS=%ARGS:* =%"
+if "%ARGS%"=="%~1" set "ARGS="
+%PY% "%SCR%/cmd_publish.py" %ARGS%
 goto end
 
 :notimpl

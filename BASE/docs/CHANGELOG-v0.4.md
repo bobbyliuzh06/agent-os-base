@@ -1,6 +1,6 @@
-# Agent-OS v0.4.0-base (candidate rc1) — 2026-09-12
+# Agent-OS v0.4.0-base 发布候选 — 2026-09-12
 
-> Status: **本地候选，未发布、未推送**。本文件是 STEP27 评审归档依据，发布前需逐项打勾。
+> Status: **本地发布候选（annotated tag v0.4.0-base），未推送 GitHub**。本文件是 STEP27-30B 评审归档依据。
 
 ## 相对 v0.3.0-base 的变更
 - [x] BASE 全脚本路径参数化（`config_loader.py`，`AGENT_OS_ROOT` + `config.json`），消除硬编码 D:/agent-os
@@ -35,7 +35,13 @@
 - 无 `archive` 命令、无 profile/skills 自动提炼
 - 备份目录位于 base 内，需 ignore 或外移（已在 regression-runs/sync-backup，被忽略）
 
-## 校验记录（STEP27 归档时填写）
+## 校验记录（v0.4.0-base-rc1 归档）
+- STEP27: 七阶段 rc=0 / STATUS healthy / READINESS WAIT / hardcoded_d_drive=0 / sync 沙箱 pass / task lock pass / artifact_leak=0
+- STEP28: init selfcheck 9/9 PASS / 干净冷启动复现 pass / config 幂等 / 密钥审计无明文
+- STEP29: mock propose+gate accept-dry / 越权6条 reject / base_change escalate / live回退链 pass / artifact_leak=0
+- STEP30A: pytest tests/test_gate_rules.py —— 14 passed（离线，可复现）
+- STEP30B: pytest 14 passed / scan hardcoded_d_drive=0 / doctor 无重复孤儿 / watch healthy / sync-check 仅本地 / archive_scope_ok(bad=0) / tag=annotated v0.4.0-base；未推送、未建远程、未子仓化
+
 - 七阶段全 rc=0：✅（STEP24 完整 wrapper 回归：pre/propose/gate/post/cleanup/observe/advice/posthealth/dashboard 全 0）
 - STATUS/READINESS：healthy / WAIT
 - hardcoded_d_drive：0
