@@ -23,3 +23,4 @@ git -C "%BASE%" status --short
 echo.
 echo ===== watch end =====
 endlocal
+call "%~dp0nightly_check.bat"
