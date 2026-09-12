@@ -12,7 +12,8 @@ ap.add_argument("--root",default=os.environ.get("AGENT_OS_ROOT",""))
 ap.add_argument("--task",default=""); ap.add_argument("task_pos",nargs="?",default="")
 ap.add_argument("--iterations",type=int,default=3)
 ap.add_argument("--live",action="store_true"); ap.add_argument("--mock",action="store_true")
-ap.add_argument("--model",default="deepseek-v4-flash"); ap.add_argument("--no-think",action="store_true"); ap.add_argument("--reasoning",default=None)
+ap.add_argument("--model",default=""); ap.add_argument("--no-think",action="store_true"); ap.add_argument("--reasoning",default=None)
+ap.add_argument("--temperature",type=float,default=None)
 ap.add_argument("--propose-only",action="store_true"); ap.add_argument("--apply-code",action="store_true")
 ap.add_argument("--dry",action="store_true")
 ns=ap.parse_args()
@@ -24,4 +25,4 @@ if not tid:
 from task_engine import evolve
 sys.exit(evolve(tid, ns.iterations, dry=True, live=ns.live and not ns.mock,
                 mock=ns.mock or not ns.live, model=ns.model, no_think=ns.no_think,
-                reasoning=ns.reasoning, apply_code=ns.apply_code))
+                reasoning=ns.reasoning, apply_code=ns.apply_code, temperature=ns.temperature))

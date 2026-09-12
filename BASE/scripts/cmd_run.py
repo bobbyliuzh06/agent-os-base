@@ -11,7 +11,8 @@ ap=argparse.ArgumentParser(description="任务级单次执行（草案+门禁，
 ap.add_argument("--root",default=os.environ.get("AGENT_OS_ROOT",""))
 ap.add_argument("--task",default=""); ap.add_argument("task_pos",nargs="?",default="")
 ap.add_argument("--live",action="store_true"); ap.add_argument("--mock",action="store_true")
-ap.add_argument("--model",default="deepseek-v4-flash"); ap.add_argument("--no-think",action="store_true"); ap.add_argument("--reasoning",default=None)
+ap.add_argument("--model",default=""); ap.add_argument("--no-think",action="store_true"); ap.add_argument("--reasoning",default=None)
+ap.add_argument("--temperature",type=float,default=None)
 ap.add_argument("--propose-only",action="store_true"); ap.add_argument("--apply-code",action="store_true")
 ap.add_argument("--dry",action="store_true")
 ap.add_argument("--exec",action="store_true"); ap.add_argument("--exec-dry",action="store_true")
@@ -42,7 +43,8 @@ except Exception as _e:
     print("registry auto-register skipped: %s" % _e)
 from task_engine import run_once
 rc = run_once(tid, dry=True, live=ns.live and not ns.mock, mock=ns.mock or not ns.live,
-              model=ns.model, no_think=ns.no_think, reasoning=ns.reasoning, apply_code=ns.apply_code or ns.exec or ns.exec_dry)
+              model=ns.model, no_think=ns.no_think, reasoning=ns.reasoning, apply_code=ns.apply_code or ns.exec or ns.exec_dry,
+              temperature=ns.temperature)
 if rc != 0:
     sys.exit(rc)
 if ns.exec or ns.exec_dry:
