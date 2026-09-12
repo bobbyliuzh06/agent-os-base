@@ -73,7 +73,7 @@ def main():
         with zipfile.ZipFile(zip_path) as z:
             names = z.namelist()
             bad = sum(1 for n in names if re.search(
-                r"(/tasks/|/PENDING/|regression-runs/|\.step.*\.bak$|\.en_bak|__pycache__|\.pyc$|_probe_)", n, re.I))
+                r"(/tasks/|/PENDING/|regression-runs/|\.step.*\.bak$|\.en_bak|__pycache__|\.pyc$|_probe_|PROJECTS/|\.idea/)", n, re.I))
     gate("archive_scope_ok", _rc == 0 and bad == 0, "zip entries bad=%d" % bad)
 
     passed = all(g[1] for g in gates)
