@@ -14,3 +14,16 @@ __pycache__/
 BASE/scripts/*.step*.bak
 .auto_merge_on
 merge_acks/
+*.step24bak
+# v0.4 task layer / runtime / backups
+tasks/
+PENDING/
+BASE/regression-runs/
+*.step*.bak
+*.step24bak
+*.en_bak
+PROJECTS/
+.env
+auto_merge_on
+merge_acks/
+*.lock
