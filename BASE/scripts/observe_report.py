@@ -74,16 +74,25 @@ def parse_head(path, keys):
         pass
     return out
 
-def last_alert_count(n_lines=200000):
-    c=0
+def count_alerts_last_run(log_path):
+    import re
+    if not os.path.isfile(log_path):
+        return 0
     try:
-        with open(LOG,"r",encoding="utf-8",errors="replace") as f:
-            for line in f:
-                if "[ALERT]" in line:
-                    c+=1
+        with open(log_path, "r", encoding="utf-8", errors="replace") as f:
+            text = f.read()
     except Exception:
-        pass
-    return c
+        return 0
+    # 按 “========== [YYYY-MM-DD HH:MM] dispatch start ==========” 切分
+    parts = re.split(r"={3,}\s*\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}\]\s*dispatch start\s*={3,}", text)
+    if len(parts) < 2:
+        # 找不到起始块时用全文 fallback，但只数最近 200 行，避免历史污染
+        tail = text.splitlines()[-200:]
+        return sum(1 for l in tail if "[ALERT]" in l)
+    last = parts[-1]
+    m_end = re.search(r"={3,}\s*\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}\]\s*dispatch end", last)
+    block = last[:m_end.start()] if m_end else last
+    return sum(1 for l in block.splitlines() if "[ALERT]" in l)
 
 def main():
     try:
@@ -94,18 +103,19 @@ def main():
     reviews=sorted(glob.glob(os.path.join(PENDING,"*.review.txt")))
     gates=sorted(glob.glob(os.path.join(PENDING,"*.gate.txt")))
     prop_rc=gate_rc=post_rc=clean_rc="na"
-    # 从最新log尾尝试抓本轮rc（简单粗解析）
+    # 从本次运行块抓各阶段 rc（与 count_alerts_last_run 同一分块口径）
     try:
         with open(LOG,"r",encoding="utf-8",errors="replace") as f:
-            tail=f.read()[-8000:]
-        for tag,var in [("propose_rc=","p"),("gate_rc=","g"),("post_rc=","o"),("cleanup_rc=","c")]:
-            ms=re.findall(tag+r"(\d+)",tail)
-            if ms:
-                m=ms[-1]
-                if var=="p": prop_rc=m
-                if var=="g": gate_rc=m
-                if var=="o": post_rc=m
-                if var=="c": clean_rc=m
+            text=f.read()
+        parts=re.split(r"={3,}\s*\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}\]\s*dispatch start\s*={3,}", text)
+        block=parts[-1] if len(parts)>1 else "\n".join(text.splitlines()[-200:])
+        def last_num(pat):
+            ms=re.findall(pat, block)
+            return ms[-1] if ms else "na"
+        prop_rc=last_num(r"propose rc=(\d+)")
+        gate_rc=last_num(r"gate rc=(\d+)")
+        post_rc=last_num(r"postprocess rc=(\d+)")
+        clean_rc=last_num(r"cleanup rc=(\d+)")
     except Exception:
         pass
     n_prop=len(reviews); n_gate=len(gates)
@@ -119,7 +129,7 @@ def main():
             unknown_list.append(os.path.basename(g))
         if st=="accept" and rk=="low":
             accept_low.append((os.path.basename(g),os.path.basename(g).replace(".gate.txt","")))
-    alerts=last_alert_count()
+    alerts=count_alerts_last_run(LOG)
     reasons=[]
     if prop_rc not in("0","na"): reasons.append("propose_rc="+str(prop_rc))
     if gate_rc not in("0","na"): reasons.append("gate_rc="+str(gate_rc))
