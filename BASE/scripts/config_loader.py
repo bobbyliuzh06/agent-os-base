@@ -94,7 +94,7 @@ class Config:
                     if "\\" in spec:
                         hive_name, sub = spec.split("\\", 1)
                         hive = getattr(winreg, hive_name, winreg.HKEY_CURRENT_USER)
-                        vname = self.get("env", "key_env_name", "DEEPSEEK_API_KEY")
+                        vname = self.get("env", "key_env_name") or "DEEPSEEK_API_KEY"
                     else:
                         # 裸值名格式（如 winreg:DEEPSEEK_API_KEY）默认在 HKCU\Environment 下取
                         hive, sub = winreg.HKEY_CURRENT_USER, "Environment"
