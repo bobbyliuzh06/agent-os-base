@@ -27,3 +27,4 @@ PROJECTS/
 auto_merge_on
 merge_acks/
 *.lock
+tests/
