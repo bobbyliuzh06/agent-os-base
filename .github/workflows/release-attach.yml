@@ -1,20 +1,20 @@
-# release-attach.yml — SLSA provenance attest（STEP45B 修正版）
-# 仅 workflow_dispatch 人工触发；只 attest 不上传、不 push、不 create release、不自动打 tag。
-# 修正点：subject-path 不再使用裸 inputs.zip（Windows 风格相对路径在 ubuntu runner 解析失败），
-# 改为 runner 用 git archive 自重建归档 → sha256 门禁校验 → 以 ${{ github.workspace }}/${{ inputs.zip }} 绝对路径 attest。
+# release-attach.yml — SLSA provenance attest（STEP45C 修正版：attest 已发布资产本体）
+# 仅 workflow_dispatch 人工触发；只 attest，不做任何写入远端（无 push/create/release/upload/delete/tag）。
+# 修正：attest 对象由"runner git archive 重建"改为"gh release download 下载已发布 Release 资产本体"，
+# 消除 git archive 在不同平台字节不确定导致的 sha256 门禁误杀。
 name: release-attach-draft
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '已发布 tag（如 v0.4.6）'
+        description: '已发布 tag'
         required: true
         default: 'v0.4.6'
-      zip:
-        description: '归档 zip 的仓库内相对路径'
+      asset:
+        description: '已发布资产文件名'
         required: true
-        default: 'BASE/regression-runs/provenance-v0.4.6/agent-os-base-v0.4.6.zip'
+        default: 'agent-os-base-v0.4.6.zip'
 
 permissions:
   id-token: write
@@ -24,25 +24,29 @@ permissions:
 jobs:
   attach-provenance:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ASSET_PATH: ${{ github.workspace }}/attest-work/${{ inputs.asset }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.tag }}
-      - name: Recreate archive from tag
+      - name: Download published release asset
         run: |
-          mkdir -p "$(dirname "${{ inputs.zip }}")"
-          git archive "${{ inputs.tag }}" -o "${{ inputs.zip }}"
+          mkdir -p attest-work
+          gh release download "${{ inputs.tag }}" --repo bobbyliuzh06/agent-os-base --pattern "${{ inputs.asset }}" --dir attest-work
       - name: Verify sha256 gate
         run: |
-          echo "910ab74b736f54c683c8ec03fcbcd2dacad63582304ed1366e351ca6b8b3b00a  ${{ inputs.zip }}" > expected.sha256
-          sha256sum -c expected.sha256 || exit 1
+          EXPECTED="910ab74b736f54c683c8ec03fcbcd2dacad63582304ed1366e351ca6b8b3b00a"
+          ACTUAL="$(sha256sum "${{ env.ASSET_PATH }}" | awk '{print $1}')"
+          echo "ACTUAL=$ACTUAL"
+          echo "EXPECTED=$EXPECTED"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then echo "SHA256_MISMATCH"; exit 1; fi
+          echo "SHA256_OK"
       - name: Generate SLSA provenance
         uses: actions/attest-build-provenance@v3
         with:
-          subject-path: ${{ github.workspace }}/${{ inputs.zip }}
-      - name: Print verify hints (read-only)
+          subject-path: ${{ env.ASSET_PATH }}
+      - name: Print verify hints
         run: |
           echo "本地验证命令（只读）："
           echo "  gh attestation list --repo bobbyliuzh06/agent-os-base --limit 50"
-          echo "  gh attestation verify '${{ inputs.zip }}' --repo bobbyliuzh06/agent-os-base --signer-workflow bobbyliuzh06/agent-os-base/.github/workflows/release-attach.yml"
-          echo "  gh release verify-asset '${{ inputs.tag }}' '${{ inputs.zip }}' --repo bobbyliuzh06/agent-os-base"
+          echo "  gh attestation verify <local-copy-of-asset> --repo bobbyliuzh06/agent-os-base --signer-workflow bobbyliuzh06/agent-os-base/.github/workflows/release-attach.yml"
+          echo "  gh release verify-asset ${{ inputs.tag }} <local-copy-of-asset> --repo bobbyliuzh06/agent-os-base"
