@@ -30,3 +30,5 @@ merge_acks/
 tests/
 
 __pycache__/
+
+.idea/
