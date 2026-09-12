@@ -59,7 +59,7 @@ def test_check_tag_types(tmp_path):
     missing = ta.check_tag("nope", repo)
     assert missing["type"] == "MISSING" and missing["reachable"] is False
 
-def test_plan_recovery_never_calls_update_ref(monkeypatch):
+def test_plan_recovery_never_calls_update_ref(tmp_path, monkeypatch):
     calls = []
     def fake_run(args, repo=None):
         calls.append(args[0])
@@ -69,11 +69,13 @@ def test_plan_recovery_never_calls_update_ref(monkeypatch):
             return subprocess.CompletedProcess(args, 0, "tag\n", "")
         return subprocess.CompletedProcess(args, 0, "", "")
     monkeypatch.setattr(ta, "_run", fake_run)
-    doc = ta.plan_recovery(["v0.4.0-base"], "backup", "repo")
+    bak = tmp_path / "backup"
+    doc = ta.plan_recovery(["v0.4.0-base"], str(bak), "repo")
     assert doc["applied"] is False
     assert "update-ref" not in calls
     assert doc["plan"][0]["type"] == "tag"
     assert "update-ref" in doc["plan"][0]["command"]  # 只出现在计划文本里
+    assert (bak / "recovery-plan.json").exists()
 
 def test_apply_recovery_requires_confirm(tmp_path, monkeypatch):
     plan_path = tmp_path / "recovery-plan.json"
