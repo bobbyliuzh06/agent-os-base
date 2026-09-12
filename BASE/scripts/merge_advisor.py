@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 import os, re, glob, sys, json
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-BASE="D:/agent-os"
+BASE=str(_C.root)
 PENDING=os.path.join(BASE,"PENDING")
 SCRIPTS=os.path.join(BASE,"BASE","scripts")
 ADVICE=os.path.join(PENDING,"merge_advice.md")
@@ -46,7 +50,8 @@ def propose_files_from_review(review_path):
             txt=f.read()
     except Exception:
         return files
-    for m in re.finditer(r"(?:修改|新增|文件)[^\n]*?([A-Za-z]:[\\/][^\s\"']+|D:/agent-os/[^\s\"']+)", txt):
+    _rootpat = re.escape(str(_C.root)) + r"/[^\s\"']+"
+    for m in re.finditer(r"(?:修改|新增|文件)[^\n]*?([A-Za-z]:[\\/][^\s\"']+|" + _rootpat + ")", txt):
         p=m.group(1).replace("/","\\")
         if os.path.isfile(p):
             files.append(p)

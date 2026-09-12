@@ -2,10 +2,17 @@
 # -*- coding: utf-8 -*-
 import os, re, sys, json, shutil, subprocess, hashlib
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-BASE_DIR = "D:/agent-os/BASE"
-PENDING_DIR = "D:/agent-os/PENDING"
+BASE_DIR = str(_C.base_dir)
+PENDING_DIR = str(_C.pending)
 GATE_STATE_FILE = os.path.join(BASE_DIR, "scripts", "gate_state.json")
+
+def _rel_key(p):
+    return os.path.relpath(p, str(_C.root)).replace("\\", "/")
 
 DSH_PROFILE = "headless"
 DSH_PROVIDER = "deepseek-official"
@@ -95,7 +102,14 @@ def load_gate_state():
     if os.path.isfile(GATE_STATE_FILE):
         try:
             with open(GATE_STATE_FILE, "r", encoding="utf-8-sig") as f:
-                return json.load(f)
+                d = json.load(f)
+            # 迁移：旧绝对路径键 → 相对 root 键（不改变任何哈希/计数）
+            gated = d.get("gated", {})
+            rroot = str(_C.root).replace("\\", "/")
+            for k in list(gated.keys()):
+                if k.replace("\\", "/").startswith(rroot + "/"):
+                    gated[_rel_key(k)] = gated.pop(k)
+            return d
         except Exception:
             return {"gated": {}}
     return {"gated": {}}
@@ -183,7 +197,7 @@ def main():
         with open(review_path, "r", encoding="utf-8", errors="replace") as fh:
             review_text = fh.read()
         h = md5_of_text(review_text)
-        if state["gated"].get(review_path) == h:
+        if state["gated"].get(_rel_key(review_path)) == h:
             continue  # 已门控且内容未变，跳过
         gate_out = review_path[:-len(".review.txt")] + ".gate.txt"
         gate_reason = review_path[:-len(".review.txt")] + ".gate.reasoning.txt"
@@ -211,7 +225,7 @@ def main():
         if os.path.isfile(pending_md):
             with open(pending_md, "a", encoding="utf-8") as f:
                 f.write("\n# gate 结论 %s\n- GATE_STATUS: %s\n- GATE_RISK: %s\n- 处置: %s\n" % (now, gstatus, grisk, decision))
-        state["gated"][review_path] = h
+        state["gated"][_rel_key(review_path)] = h
         processed += 1
         log("[门控] %s -> 裁决 %s | 推理 %s | GATE_STATUS=%s | rc=%s" % (review_path, gate_out, gate_reason, gstatus, rc))
     save_gate_state(state)

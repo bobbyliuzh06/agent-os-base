@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 import os, re, glob, sys, json, subprocess
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-BASE="D:/agent-os"
+BASE=str(_C.root)
 PENDING=os.path.join(BASE,"PENDING")
 SCRIPTS=os.path.join(BASE,"BASE","scripts")
 OBS_CSV=os.path.join(BASE,"BASE","regression-runs","observe.csv")

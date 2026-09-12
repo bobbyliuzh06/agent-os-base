@@ -2,8 +2,9 @@
 setlocal enabledelayedexpansion
 REM agent-os evolve dispatch v0.3: pre-health gate + propose + gate + post + cleanup + observe + advice + post-health/dashboard
 set "PYTHON_EXE=python"
-set "SCRIPTS=D:/agent-os/BASE/scripts"
-set "LOG=D:/agent-os/BASE/regression-runs/dispatch.log"
+if not defined AGENT_OS_ROOT set "AGENT_OS_ROOT=D:/agent-os"
+set "SCRIPTS=%AGENT_OS_ROOT%\BASE\scripts"
+set "LOG=%AGENT_OS_ROOT%\BASE\regression-runs\dispatch.log"
 
 for /f %%a in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd"') do set "TODAY=%%a"
 for /f %%a in ('powershell -NoProfile -Command "Get-Date -Format HH:mm"') do set "NOW=%%a"

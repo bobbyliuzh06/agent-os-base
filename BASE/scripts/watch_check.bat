@@ -1,7 +1,8 @@
 @echo off
 setlocal
-set "BASE=D:/agent-os"
-set "REG=%BASE%\BASE\regression-runs"
+if not defined AGENT_OS_ROOT set "AGENT_OS_ROOT=D:/agent-os"
+set "BASE=%AGENT_OS_ROOT%"
+set "REG=%AGENT_OS_ROOT%\BASE\regression-runs"
 set "SCH=AgentOS_EvolveDispatch"
 echo ===== %date% %time% agent-os watch =====
 echo.

@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 import os, re, sys, glob
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-PENDING = "D:/agent-os/PENDING"
+PENDING = str(_C.pending)
 
 def log(s):
     print(s, flush=True)

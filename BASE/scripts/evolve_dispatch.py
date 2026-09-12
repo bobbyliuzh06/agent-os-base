@@ -2,11 +2,21 @@
 # -*- coding: utf-8 -*-
 import os, re, sys, json, shutil, hashlib, subprocess
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-BASE_DIR = "D:/agent-os/BASE"
-PROJECTS_DIR = "D:/agent-os/PROJECTS"
-PENDING_DIR = "D:/agent-os/PENDING"
+BASE_DIR = str(_C.base_dir)
+PROJECTS_DIR = str(_C.root / "PROJECTS")
+PENDING_DIR = str(_C.pending)
 STATE_FILE = os.path.join(BASE_DIR, "scripts", "state.json")
+
+def _rel_key(p):
+    return os.path.relpath(p, str(_C.root)).replace("\\", "/")
+
+def _abs_key(k):
+    return os.path.join(str(_C.root), k.replace("/", os.sep))
 
 DSH_PROFILE = "headless"
 DSH_PROVIDER = "deepseek-official"
@@ -102,7 +112,14 @@ def load_state():
     if os.path.isfile(STATE_FILE):
         try:
             with open(STATE_FILE, "r", encoding="utf-8-sig") as f:
-                return json.load(f)
+                state = json.load(f)
+            # 迁移：旧绝对路径键 → 相对 root 键（不改变任何哈希/计数）
+            known = state.get("known", {})
+            rroot = str(_C.root).replace("\\", "/")
+            for k in list(known.keys()):
+                if k.replace("\\", "/").startswith(rroot + "/"):
+                    known[_rel_key(k)] = known.pop(k)
+            return state
         except Exception:
             return {"known": {}}
     return {"known": {}}
@@ -115,7 +132,7 @@ def prune_ghost_state(state):
     known = state.get("known", {})
     removed = []
     for k in list(known.keys()):
-        if not os.path.isfile(k):
+        if not os.path.isfile(_abs_key(k)):
             removed.append(k)
             del known[k]
     if removed:
@@ -151,7 +168,7 @@ def build_prompt(proj_name, prop_path):
     with open(prop_path, "r", encoding="utf-8", errors="replace") as fh:
         prop_text = fh.read()
     sys_prompt = ("你是 agent-os propose-gate 评审员。只基于下面规则与提案产出对 BASE 的修改建议，不执行合并、不执行 git 写操作。\n"
-                  "输出要求：1) 摘要；2) 拟修改/新增文件清单（相对 D:/agent-os/BASE）；3) 每个文件给 unified diff 或完整新内容；"
+                  "输出要求：1) 摘要；2) 拟修改/新增文件清单（相对 " + str(_C.base_dir) + "）；3) 每个文件给 unified diff 或完整新内容；"
                   "4) 自评估风险等级低/中/高与触发回归探针；5) 若不满足 META/GATE.md 门槛，说明驳回理由。\n"
                   "正文最后必须输出独立块：\n## VERDICT\nSTATUS: accept|reject|needs-revision\nRISK: low|medium|high\n"
                   "不要把推理过程写进最终正文。\n\n" + "\n\n".join(rules))
@@ -212,14 +229,14 @@ def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     new_items, historical = [], 0
     for name, path, h in proposals:
-        if state.get("known", {}).get(path) == h:
+        if state.get("known", {}).get(_rel_key(path)) == h:
             continue
         if first_run:
-            state.setdefault("known", {})[path] = h
+            state.setdefault("known", {})[_rel_key(path)] = h
             historical += 1
         else:
             new_items.append((name, path, h))
-            state.setdefault("known", {})[path] = h
+            state.setdefault("known", {})[_rel_key(path)] = h
     save_state(state)
     for name, path, h in new_items:
         date_str = now[:10]

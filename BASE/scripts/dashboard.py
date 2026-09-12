@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 import os, sys, csv, glob
 from datetime import datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from config_loader import load_config as _load, apply_root_arg
+sys.argv = apply_root_arg()
+_C = _load()
 
-BASE="D:/agent-os"
+BASE=str(_C.root)
 OBS=os.path.join(BASE,"BASE","regression-runs","observe.csv")
 PENDING=os.path.join(BASE,"PENDING")
 
@@ -12,7 +16,7 @@ def log(s):
 
 def _after_baseline(rows, header):
     import os, datetime
-    bpath = os.path.join("D:/agent-os/BASE/regression-runs", ".obs_baseline_ts")
+    bpath = os.path.join(str(_C.regression), ".obs_baseline_ts")
     if not os.path.isfile(bpath):
         return rows
     try:
