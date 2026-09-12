@@ -1,0 +1,11 @@
+{
+  "allow_paths": [],
+  "allow_risk": [
+    "low"
+  ],
+  "max_auto_files": 5,
+  "require_regression_all_green": true,
+  "require_no_alert": true,
+  "require_no_unknown_gate": true,
+  "require_human_ack_file": true
+}

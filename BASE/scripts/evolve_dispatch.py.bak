@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+evolve_dispatch.py - 常驻演化调度器（扫描+待办版）
+
+职责：
+  - 扫描 D:/agent-os/PROJECTS/*/WORKSPACE/PROPOSAL.md
+  - 记录每个提案文件的内容哈希（state.json）
+  - 新出现或内容变化的提案，生成人工待办到 D:/agent-os/PENDING/
+  - 第一次运行会把现有提案全部记为历史，不生成待办
+"""
+import os
+import re
+import sys
+sys.stdout.reconfigure(encoding="utf-8")
+import json
+import hashlib
+from datetime import datetime
+
+BASE_DIR = "D:/agent-os/BASE"
+PROJECTS_DIR = "D:/agent-os/PROJECTS"
+PENDING_DIR = "D:/agent-os/PENDING"
+STATE_FILE = os.path.join(BASE_DIR, "scripts", "state.json")
+
+
+def md5_of_file(path):
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        h.update(f.read())
+    return h.hexdigest()
+
+
+def find_proposals():
+    """返回 [(项目名, 提案文件绝对路径, 哈希)]"""
+    found = []
+    if not os.path.isdir(PROJECTS_DIR):
+        return found
+    for name in os.listdir(PROJECTS_DIR):
+        proj_dir = os.path.join(PROJECTS_DIR, name)
+        if not os.path.isdir(proj_dir):
+            continue
+        candidates = [
+            os.path.join(proj_dir, "WORKSPACE", "PROPOSAL.md"),
+            os.path.join(proj_dir, "PROPOSAL.md"),
+        ]
+        for p in candidates:
+            if os.path.isfile(p):
+                found.append((name, p, md5_of_file(p)))
+                break
+    return found
+
+
+def load_state():
+    if os.path.isfile(STATE_FILE):
+        with open(STATE_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"known": {}}
+
+
+def save_state(state):
+    with open(STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=2)
+
+
+def main():
+    os.makedirs(PENDING_DIR, exist_ok=True)
+
+    state = load_state()
+    first_run = (len(state.get("known", {})) == 0)
+    proposals = find_proposals()
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    new_items = []
+    historical = 0
+
+    for name, path, h in proposals:
+        known_h = state.get("known", {}).get(path)
+        if known_h == h:
+            continue
+
+        if first_run:
+            # 第一次运行：只登记，不当新提案
+            state.setdefault("known", {})[path] = h
+            historical += 1
+        else:
+            new_items.append((name, path, h))
+            state.setdefault("known", {})[path] = h
+
+    save_state(state)
+
+    for name, path, h in new_items:
+        date_str = now[:10]
+        slug = re.sub(r"[^0-9A-Za-z_-]", "-", name)
+        pending_file = os.path.join(PENDING_DIR, f"{slug}-{date_str}.md")
+        with open(pending_file, "w", encoding="utf-8") as f:
+            f.write(f"# 待人工复核提案\n\n")
+            f.write(f"- 项目：{name}\n")
+            f.write(f"- 提案文件：{path}\n")
+            f.write(f"- 内容哈希：{h}\n")
+            f.write(f"- 发现时间：{now}\n")
+            f.write(f"- 状态：等待 gate-review\n")
+        print(f"[新提案] {name} -> {pending_file}")
+
+    print("=" * 50)
+    print(f"运行时间：{now}")
+    print(f"扫描项目数：{len(proposals)}")
+    print(f"首次运行登记历史提案：{historical}")
+    print(f"新提案数：{len(new_items)}")
+    if not proposals:
+        print("提示：PROJECTS 下暂未找到 PROPOSAL.md")
+    print(f"状态文件：{STATE_FILE}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        print(f"错误：{e}")
+        sys.exit(1)

@@ -1,0 +1,20 @@
+# 不进入版本库
+.env
+**/.env
+*.key
+credentials*
+node_modules/
+.DS_Store
+
+# 项目侧 WORKSPACE 不进 BASE 仓库（BASE 是模板，不含实例数据）
+WORKSPACE/raw/*
+!WORKSPACE/raw/.gitkeep
+WORKSPACE/skills/*
+!WORKSPACE/skills/.gitkeep
+
+# IDE
+.idea/
+
+# 回归试跑原始记录（运行时产物，仅本地 E1 查验，不入库）
+regression-runs/
+WORKSPACE/regression-runs/
