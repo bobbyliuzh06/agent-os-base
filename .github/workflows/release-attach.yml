@@ -1,8 +1,7 @@
-# release-attach.yml — 供应链验证草案（STEP42B）
-# 仅 workflow_dispatch 手动触发；不 push、不 create release、不自动打 tag。
-# 用途：对指定 tag 的 zip 资产生成 build provenance attestation 并上传 attestation 文件
-# （供 gh release verify / gh attestation verify 使用）。
-# 注意：本文件当前为本地草案，未启用 secrets、未触发；启用前需人工复核。
+# release-attach.yml — SLSA provenance attest（STEP45B 修正版）
+# 仅 workflow_dispatch 人工触发；只 attest 不上传、不 push、不 create release、不自动打 tag。
+# 修正点：subject-path 不再使用裸 inputs.zip（Windows 风格相对路径在 ubuntu runner 解析失败），
+# 改为 runner 用 git archive 自重建归档 → sha256 门禁校验 → 以 ${{ github.workspace }}/${{ inputs.zip }} 绝对路径 attest。
 name: release-attach-draft
 
 on:
@@ -11,10 +10,11 @@ on:
       tag:
         description: '已发布 tag（如 v0.4.6）'
         required: true
-      zip_path:
+        default: 'v0.4.6'
+      zip:
         description: '归档 zip 的仓库内相对路径'
         required: true
-        default: 'BASE/regression-runs/agent-os-base.zip'
+        default: 'BASE/regression-runs/provenance-v0.4.6/agent-os-base-v0.4.6.zip'
 
 permissions:
   id-token: write
@@ -28,13 +28,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.tag }}
-      - name: Attest build provenance
+      - name: Recreate archive from tag
+        run: |
+          mkdir -p "$(dirname "${{ inputs.zip }}")"
+          git archive "${{ inputs.tag }}" -o "${{ inputs.zip }}"
+      - name: Verify sha256 gate
+        run: |
+          echo "910ab74b736f54c683c8ec03fcbcd2dacad63582304ed1366e351ca6b8b3b00a  ${{ inputs.zip }}" > expected.sha256
+          sha256sum -c expected.sha256 || exit 1
+      - name: Generate SLSA provenance
         uses: actions/attest-build-provenance@v3
         with:
-          subject-path: ${{ github.event.inputs.zip_path }}
-      # 以下仅为打印说明，不做任何写操作
-      - name: Print verify hints
+          subject-path: ${{ github.workspace }}/${{ inputs.zip }}
+      - name: Print verify hints (read-only)
         run: |
-          echo "本地验证（只读）："
-          echo "  gh release verify '${{ github.event.inputs.tag }}' -R <owner>/<repo>"
-          echo "  gh release verify-asset '${{ github.event.inputs.tag }}' <local-zip> -R <owner>/<repo>"
+          echo "本地验证命令（只读）："
+          echo "  gh attestation list --repo bobbyliuzh06/agent-os-base --limit 50"
+          echo "  gh attestation verify '${{ inputs.zip }}' --repo bobbyliuzh06/agent-os-base --signer-workflow bobbyliuzh06/agent-os-base/.github/workflows/release-attach.yml"
+          echo "  gh release verify-asset '${{ inputs.tag }}' '${{ inputs.zip }}' --repo bobbyliuzh06/agent-os-base"
