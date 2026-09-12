@@ -29,6 +29,8 @@ def main():
     ap.add_argument("--repo", default="")
     ap.add_argument("--asset", default="")
     ap.add_argument("--gh-upload", action="store_true")
+    ap.add_argument("--asset-from-HEAD", action="store_true",
+                    help="dry 默认：从 HEAD 现场 git archive 生成干净资产并做门禁")
     ns = ap.parse_args()
     if ns.root: os.environ["AGENT_OS_ROOT"] = ns.root
     C = _lc()
@@ -37,10 +39,10 @@ def main():
         gates.append((name, ok, detail))
         print("  [%s] %s %s" % ("PASS" if ok else "FAIL", name, detail))
 
-    # 1) pytest
-    out, rc = _run('python -m pytest "%s/tests/test_gate_rules.py" -q' % C.root)
+    # 1) pytest（全量套件）
+    out, rc = _run('python -m pytest "%s/tests/" -q' % C.root)
     m = re.search(r"(\d+) passed", out)
-    gate("pytest_passed", bool(m) and int(m.group(1)) >= 14, ("%s passed" % m.group(1)) if m else out[-120:])
+    gate("pytest_passed", bool(m) and int(m.group(1)) >= 68, ("%s passed" % m.group(1)) if m else out[-120:])
     # 2) scan hardcoded_d_drive
     out2, _ = _run('python "%s/scan_hardcoded.py"' % C.scripts_dir)
     gate("scan_hardcoded_d_drive_0", "[hardcoded_d_drive]" not in out2, "rows 见报告")
@@ -61,15 +63,17 @@ def main():
     gate("four_locks_off", locks_absent, "未建任何合并锁")
     tl = C.get("task_layer", "enabled")
     gate("task_layer_disabled", tl is False, "task_layer.enabled=%s" % tl)
-    # 7) archive scope（tag 或 HEAD）
-    ref = ns.tag
-    zip_path = C.regression / ("agent-os-base-%s.zip" % ns.tag)
+    # 7) archive scope（tag 或 HEAD 现场生成）
+    ref = "HEAD" if ns.asset_from_HEAD else ns.tag
+    zip_name = "agent-os-base-HEAD.zip" if ns.asset_from_HEAD else ("agent-os-base-%s.zip" % ns.tag)
+    zip_path = C.regression / zip_name
     _out, _rc = _run('git -C "%s" archive --format=zip -o "%s" %s' % (C.root, zip_path, ref))
     bad = 0
     if _rc == 0 and zip_path.exists():
         with zipfile.ZipFile(zip_path) as z:
             names = z.namelist()
-            bad = sum(1 for n in names if re.search(r"(/tasks/|/PENDING/|regression-runs/|\.step.*\.bak$|\.en_bak)", n, re.I))
+            bad = sum(1 for n in names if re.search(
+                r"(/tasks/|/PENDING/|regression-runs/|\.step.*\.bak$|\.en_bak|__pycache__|\.pyc$|_probe_)", n, re.I))
     gate("archive_scope_ok", _rc == 0 and bad == 0, "zip entries bad=%d" % bad)
 
     passed = all(g[1] for g in gates)
