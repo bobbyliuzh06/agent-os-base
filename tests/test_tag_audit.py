@@ -105,3 +105,73 @@ def test_cli_dry_run_no_ref_change(tmp_path, capsys):
     assert before == after, "dry-run 不得修改任何 ref"
     assert "LOCAL_TOTAL=2" in out
     assert "RECOVERY_PLAN" in out and "applied=False" in out
+
+def _fake_fetch_interceptor(recorded):
+    real_run = ta.subprocess.run
+    def fake_run(cmd, **k):
+        if "fetch" in cmd:
+            recorded.append(cmd)
+            return subprocess.CompletedProcess(cmd, 0, "", "")
+        return real_run(cmd, **k)
+    return fake_run
+
+# ---- STEP37 sync-remote-only ----
+
+def _add_v043_tag(repo):
+    subprocess.run(["git", "-C", repo, "tag", "v0.4.3-cleanbase"], check=True)
+
+def test_sync_remote_only_dry_run_plans_only(tmp_path, monkeypatch):
+    repo, _ = _init_tmp_repo(tmp_path / "r3")
+    _add_v043_tag(repo)
+    bak = tmp_path / "backup"
+    recorded = []
+    monkeypatch.setattr(ta, "_list_remote", lambda r: {"v0.4.3-cleanbase", "v0.5.0"})
+    monkeypatch.setattr(ta.subprocess, "run", _fake_fetch_interceptor(recorded))
+    before = ta.snapshot_local(repo)
+    meta = ta.sync_remote_only(repo, str(bak), dry_run=True)
+    assert meta["only_remote"] == ["v0.5.0"]
+    assert len(meta["plan"]) == 1
+    assert meta["plan"][0] == ["git", "-C", repo, "fetch", "origin",
+                               "refs/tags/v0.5.0:refs/tags/v0.5.0"]
+    assert recorded == []
+    assert ta.snapshot_local(repo) == before
+    assert (bak / "sync-remote-plan.json").exists()
+
+def test_sync_remote_only_no_prune_or_overwrite(tmp_path, monkeypatch):
+    repo, _ = _init_tmp_repo(tmp_path / "r4")
+    _add_v043_tag(repo)
+    bak = tmp_path / "backup"
+    recorded = []
+    monkeypatch.setattr(ta, "_list_remote", lambda r: {"v0.4.3-cleanbase", "v0.5.0", "v0.6.0"})
+    monkeypatch.setattr(ta.sys, "argv", ["tag_audit.py", "--confirm"])
+    monkeypatch.setenv("TAG_AUDIT_CONFIRM", "yes")
+    monkeypatch.setattr(ta.subprocess, "run", _fake_fetch_interceptor(recorded))
+    before = ta.snapshot_local(repo)
+    meta = ta.sync_remote_only(repo, str(bak), dry_run=False)
+    tokens = [tok for c in recorded for tok in c]  # 只检查命令 token，排除含 "no_prune" 的 tmp 路径
+    assert all(tok != "--prune" and tok != "--prune-tags" for tok in tokens)
+    assert all("+refs/tags" not in tok for tok in tokens)
+    assert all("push" not in tok for tok in tokens)
+    assert len(recorded) == 2  # 两个精确 fetch（被 mock 拦截，未真联网）
+    assert all(c[-1].startswith("refs/tags/") and ":refs/tags/" in c[-1]
+               and "*" not in c[-1] for c in recorded)
+    assert len(meta["failed"]) == 0
+    assert ta.snapshot_local(repo) == before  # 本地 tag 对象未被 overwrite
+
+def test_sync_remote_no_confirm_is_dry(tmp_path, monkeypatch):
+    repo, _ = _init_tmp_repo(tmp_path / "r5")
+    _add_v043_tag(repo)
+    bak = tmp_path / "backup"
+    recorded = []
+    monkeypatch.setattr(ta, "_list_remote", lambda r: {"v0.4.3-cleanbase", "v0.5.0"})
+    monkeypatch.setattr(ta.subprocess, "run", _fake_fetch_interceptor(recorded))
+    monkeypatch.delenv("TAG_AUDIT_CONFIRM", raising=False)
+    monkeypatch.setattr(ta.sys, "argv", ["tag_audit.py"])
+    meta1 = ta.sync_remote_only(repo, str(bak), dry_run=False)
+    assert recorded == [], "缺 env 确认时不得 fetch"
+    assert meta1["dry_run"] is False and meta1["plan"]
+    monkeypatch.setenv("TAG_AUDIT_CONFIRM", "yes")
+    monkeypatch.setattr(ta.sys, "argv", ["tag_audit.py", "--confirm"])
+    ta.sync_remote_only(repo, str(bak), dry_run=False)
+    assert len(recorded) == 1, "env+--confirm 后才执行精确 fetch"
+    assert recorded[0][-1] == "refs/tags/v0.5.0:refs/tags/v0.5.0"

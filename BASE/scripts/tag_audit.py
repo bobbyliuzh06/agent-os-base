@@ -66,6 +66,15 @@ def diff(repo=None):
     return sorted(set(local) - remote), sorted(remote - set(local)), local
 
 
+# 兼容审计约定的私有命名别名（逻辑同 snapshot_local/list_remote）
+def _snapshot_local(repo):
+    return snapshot_local(repo)
+
+
+def _list_remote(repo):
+    return list_remote(repo=repo)
+
+
 def check_tag(tagname, repo=None):
     """返回 {type,obj,peel,reachable}；type in tag/commit/MISSING。"""
     obj_r = _run(["rev-parse", "--verify", "refs/tags/" + tagname], repo)
@@ -131,6 +140,34 @@ def apply_recovery(plan_path, repo=None, confirm=False):
     return {"status": "applied", "results": results}
 
 
+def sync_remote_only(repo, backup_dir, dry_run=True):
+    """安全同步远端多出的 tag：精确 ref 差集 fetch（refs/tags/<n>:refs/tags/<n>）。
+    - 默认 dry_run：只生成 sync-remote-plan.json，绝不 fetch。
+    - 执行 fetch 需 dry_run=False 且 TAG_AUDIT_CONFIRM=yes 且命令行含 --confirm。
+    - 绝不使用 --prune-tags / '+refs/tags/*:refs/tags/* --prune' / fetch --tags --prune /
+      tag -f / push --tags / push --mirror；绝不 overwrite 本地已有 tag。"""
+    local = _snapshot_local(repo)
+    remote = _list_remote(repo)
+    only_remote = sorted(set(remote) - set(local))
+    plan = [["git", "-C", repo, "fetch", "origin",
+             "refs/tags/%s:refs/tags/%s" % (n, n)] for n in only_remote]
+    meta = {"generated_at": datetime.datetime.now().isoformat(), "dry_run": dry_run,
+            "only_remote": only_remote, "plan": plan, "failed": []}
+    bdir = Path(backup_dir)
+    bdir.mkdir(parents=True, exist_ok=True)
+    (bdir / "sync-remote-plan.json").write_text(
+        json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    if dry_run or not (os.environ.get("TAG_AUDIT_CONFIRM") == "yes" and "--confirm" in sys.argv):
+        return meta
+    for cmd in plan:
+        r = subprocess.run(cmd, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+        if r.returncode != 0:
+            meta["failed"].append({"cmd": cmd, "err": r.stderr.strip()[:500]})
+            break
+    return meta
+
+
 def main(argv=None):
     if sys.stdout.encoding.lower().startswith("utf"):
         try:
@@ -142,11 +179,23 @@ def main(argv=None):
     ap.add_argument("--backup-dir", default="BASE/regression-runs/tag-backup")
     ap.add_argument("--dry-run", action="store_true", default=True)
     ap.add_argument("--apply", action="store_true",
-                    help="应用 recovery-plan（需 --confirm 且 TAG_AUDIT_CONFIRM=yes）")
+                    help="应用 recovery-plan / 允许 sync 执行（需 --confirm 且 TAG_AUDIT_CONFIRM=yes）")
     ap.add_argument("--confirm", action="store_true")
+    ap.add_argument("--sync-remote-only", action="store_true",
+                    help="精确 ref 差集同步远端多出的 tag（默认 dry-run，绝不 overwrite 本地已有 tag）")
     ns = ap.parse_args(argv)
     repo = ns.repo or None
     backup = ns.backup_dir
+    if ns.sync_remote_only:
+        meta = sync_remote_only(repo, backup, dry_run=not ns.apply)
+        print("ONLY_REMOTE=%s" % (",".join(meta["only_remote"]) if meta["only_remote"] else "(none)"))
+        print("SYNC_PLAN items=%d dry_run=%s failed=%d" % (
+            len(meta["plan"]), meta["dry_run"], len(meta["failed"])))
+        for cmd in meta["plan"]:
+            print("  PLAN", " ".join(cmd))
+        if meta["failed"]:
+            print("SYNC_FAILED", json.dumps(meta["failed"], ensure_ascii=False))
+        return 0
     local = snapshot_local(repo)
     remote = list_remote(repo=repo)
     lo = sorted(set(local) - remote)
