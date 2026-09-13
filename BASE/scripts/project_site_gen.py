@@ -253,7 +253,8 @@ def render(data):
                       '连续无事故 <b>%s</b> · 自改 <b>%s</b> 次（导航 %s + 认知 %s）· 影子运行 <b>%s</b> 次 · '
                       '信号学习 <b>%s</b> 类 · 假设裁决 <b>%s</b> 条</p>'
                       '<p>纸面组合（合成回放演练，无真实市场含义，不构成投资建议）：本金 100000 → 净值 '
-                      '<b>%s</b>（结算 %s 周期）</p>'
+                      '<b>%s</b>（结算 %s 周期，回撤 %s）</p>'
+                      '%s'
                       '<p class="note">成长日记为脱敏聚合：目标内容与真值路径默认私有；数字来自真实运行记录。</p>'
                       % (esc(dy.get("cycles")), esc(dy.get("events")), esc(dy.get("chain")),
                          esc(",".join(dy.get("worlds", []))), esc(dy.get("autonomy")),
@@ -261,7 +262,13 @@ def render(data):
                          esc(dy.get("selfmods_nav")), esc(dy.get("selfmods_cognition")),
                          esc(dy.get("shadow_runs")), esc(dy.get("signals_learned")),
                          esc(dy.get("hypotheses_confirmed")), esc(pf.get("value")),
-                         esc(pf.get("settled_cycles"))))
+                         esc(pf.get("settled_cycles")),
+                         ("%.1f%%" % (pf.get("drawdown", 0) * 100) if pf.get("drawdown") is not None else "?"),
+                         (lambda ad: ('<p>适应实验（合成数据）：%s → %s → %s → %s</p>'
+                                      % (esc(ad["detect"]), esc(ad["defend"]), esc(ad["abandon"]),
+                                         "组合受保护（回撤 %.1f%%）" % (ad["portfolio_protected"]["drawdown"] * 100)
+                                         if ad.get("portfolio_protected") else ""))
+                          if ad else '')(dy.get("adaptation_experiment"))))
     else:
         diary_html = '<p class="note">婴儿成长日记未生成（baby_diary 尚未运行）。</p>'
     rg = data.get("real_goal")
