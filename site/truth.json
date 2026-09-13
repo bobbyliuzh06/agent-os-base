@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T06:42:14Z",
+  "generated_at": "2026-09-13T07:32:57Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.0-7-g71c41f8",
+      "text": "v0.5.0-9-gdba3d34",
       "source": ".git/refs/tags",
       "sha256": "2a07379b0386ed0959163cf9d90857c7f2cd7a96ebd776fa57589036b0910d8a"
     },
@@ -21,7 +21,7 @@
       "label": "回归台账",
       "text": "[{\"file\": \"MANIFEST-v0.4.3-cleanbase.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.4-audit.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.6.json\", \"schema\": null, \"status\": null, \"enabled\": \"enabled_from_v0.4.6\"}, {\"file\": \"nightly-20260912.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"nightly-20260913.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"PREFLIGHT-v0.4.2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-pain-verification.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-regression.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.6-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}, {\"file\": \"SUPPLYCHAIN-v0.4.6-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.5.0-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}]",
       "source": "BASE/regression-runs",
-      "sha256": "3e1a0f200c006ae42ceb7564740c11e5591c0e30626069ff208a02e22c0c0fbf"
+      "sha256": "db67a583e434ff21a0aa8c9a1e6ca542beadf33dcbd270f861865ac69fce3ac4"
     },
     {
       "id": "project-cases",
@@ -42,33 +42,33 @@
       "label": "真实局限",
       "text": "- 组合案例（P0/P1）使用合成数据演练，无真实市场含义；其价值在决策链纪律而非收益。\n- task_layer.enabled=false：任务层当前关闭（明确为下一里程碑候选，见 roadmap），任务以人工/会话方式推进，不声称自驱常驻。\n- 发布通道已开启（v0.5.0）：本站随发布上线 GitHub Pages；访问量/反馈指标尚未接入（P-8 待办），在接入前本声明继续生效。\n- LLM 提议器曾因长 JSON 输出截断而 0/3 回退（痛点 P-1）；已用短输出约束+重试修复，证据为 run-20260913T031934Z live 3/3。残余风险：超长复杂提议仍可能截断。\n- 回撤纪律在原型中为'记录并继续'的只读审查，尚未接真实风控动作。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "583c13afbf8b746e7a0bd2e28f04a93cf704a5addfd8050e134d3598d6e902e4"
+      "sha256": "a4ca7de159c1e311c926b44c2fad7df44b9489d08907e2ff8653d3d0900a0662"
     },
     {
       "id": "roadmap",
       "label": "路线图",
       "text": "- P0（已完成）：纸面投资组合四周期闭环，假设可证伪、决策链完整、回撤纪律先于收益。\n- P1（已完成）：LLM 提议器接入 + 连续持仓压力演练，回撤纪律真实触发；策略池竞赛+样本外验证后冻结案例层。\n- P2（进行中）：本站——底座机制讲解窗口，已由管线接管（5b 阶段每 4 小时自动刷新）。\n- P3（已完成）：案例③ 七段管线注册为 Project；自体检/站点/验证器/复核人/回归集挂入调度（5a/5b/6a/6b/7a）。\n- 发布通道（已完成）：v0.5.0 发布，本站上线 GitHub Pages；访问/反馈真值接入为 P-8 待办。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "583c13afbf8b746e7a0bd2e28f04a93cf704a5addfd8050e134d3598d6e902e4"
+      "sha256": "a4ca7de159c1e311c926b44c2fad7df44b9489d08907e2ff8653d3d0900a0662"
     },
     {
       "id": "narrative",
       "label": "机制讲解叙事(初衷/用法/案例样本/方向/愿景)",
       "text": "{\"intent\": \"架构初衷：agent-os 不追求\\\"一次性交付\\\"，而是把每个目标当作持续责任来管理—— 记忆先于智能、真值先于自动化、人机分界按风险。底座自身的演化走同一套机制： 轨迹采集 → 模式提取 → 提案 → 门控验证 → 回滚，即\\\"用系统演化系统\\\"。\\n\", \"what_is\": [\"是：一个自托管、自审查、自演化的智能体底座；Project 层把长期目标注册为持续责任对象。\", \"是：一套把失败聚合为痛点、把反馈固化为记忆、让每个提案都必须回答'治哪个痛点'的演化机制。\", \"不是：单次任务自动化工具；不是生成内容后即弃的流程；不是绕过人工的高危执行器。\"], \"how_to_use\": [\"使用者路径：把你的长期目标写成 charter（身份/约束/评估域/审批点），底座按节奏观察→提议→门禁→执行→记录→复盘。\", \"提案者路径：任何 BASE 修改先写 PROPOSAL.md，过确定性规则层，再由人工门禁裁决；四锁（auto_merge/all_probe/merge_acks/白名单）可关停自动合并。\", \"维护者路径：体验证过的经验回流 BASE（governance 归档），未经验证的经验留在任务层草稿；执行与经验隔离。\", \"评估域随场景声明：投资=绩效评估；网页按目的=访问/转化/留存/美工评审；底座自身=过程健康指标。机制不变，表象随场景。\"], \"cases_as_samples\": [\"样本①纸面投资组合：演示评估域(paper-performance)+痛点台账+策略竞赛——痛点 P-2 从'策略跑输'经诊断、人工裁决、修数据、重赛到策略被证据替换的完整弧线。\", \"样本②本站自身：演示真值溯源(每项声称有来源+sha256)与迭代记忆(本页渲染自己的 iterations.jsonl)。\", \"样本③七段管线体检：演示漂移检测(41 个管线脚本快照)与过程健康评估域(process-health)。\"], \"directions\": [\"策略池常态化：冠军+变异压力测试、样本外验证（当前为单窗口原型）。\", \"跨项目经验迁移：痛点台账与评估域在多 Project 间复用、registry 全局汇总。\", \"真实世界信号：站点发布后以 GitHub Issues 反馈为真值输入。\"], \"potential\": \"突破性可能（诚实版）：如果\\\"用系统演化系统\\\"闭环成立，软件维护会从\\\"人写规则\\\" 变为\\\"系统积累证据、人工审批边界、机器执行纪律\\\"——经验可跨域迁移、失败自动聚合、 长期目标有人持续负责。当前状态：原型，机制已跑通一圈，但尚未在真实生产压力下验证。 本段为愿景陈述，非能力声称。\\n\"}",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "583c13afbf8b746e7a0bd2e28f04a93cf704a5addfd8050e134d3598d6e902e4"
+      "sha256": "a4ca7de159c1e311c926b44c2fad7df44b9489d08907e2ff8653d3d0900a0662"
     },
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=12 open=6 resolved=6 evidence_gaps=0",
+      "text": "projects=2 pains=13 open=7 resolved=6 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "3b7fb175a5d6cffaf6bd1c2eb66629f5bde5bd60b410f64026d1fa7fec56e984"
+      "sha256": "78198bf0c71717a0c29174ac51c617652150b8d0bdac443b340c0f3ca7cd815b"
     },
     {
       "id": "feedback-truth",
       "label": "真实世界反馈真值",
-      "text": "issues=0 status=available v0.5.0_downloads=2",
+      "text": "issues=0 status=available v0.5.0_downloads=2 clones=count=55/uniques=25 delta=open_issues+0, v050_downloads+0",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\truth\\feedback.json",
       "sha256": "e38e53d36a70bf47cd6e91f77a41dd78025f9c591373027d7def76c5e5531e8e"
     }
@@ -82,7 +82,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "9666d6c80c2d459d63471bcc505354d86bb8eded5f466185ede088c8494b2032",
-    "truth.json": "2ba90bb17f44629c0993a865a7e2bc0e81741cf8453c0dbb3b6306df0c40c586"
+    "index.html": "8c143498221813cc0afd515e3677cc47c951455196501e362ec177c1254d68b7",
+    "truth.json": "cefb35bf743ab7824a3e1c9db9044078104e709028564102ba5bfb9d59045a06"
   }
 }
