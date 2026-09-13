@@ -1,0 +1,8 @@
+# agent-os BASE 依赖声明（最小集）
+# Python 版本契约：3.9+（本机 3.9.13 验证运行）；3.10+ 推荐。
+
+# 核心运行时（config/charter/台账解析）
+PyYAML>=5.4
+
+# Windows 沙箱（code_sandbox_run.py 的 JobObject 首选实现，仅 Windows）
+# pywin32; sys_platform == "win32"

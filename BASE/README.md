@@ -1,86 +1,72 @@
-# agent-os / BASE — 通用演化底座 v0.1.0
+# agent-os / BASE — 自托管、自审查、自演化的智能体底座
 
-> **固定路径复制最新版本即可在独立会话随时开始任何需求/任务。**
+> **版本 v0.5.0**（git tag v0.5.0；供应链台账 SUPPLYCHAIN-v0.5.0-provenance.json）。
+> 公开展示站（真值驱动，管线每 4 小时自动刷新）：https://bobbyliuzh06.github.io/agent-os-base/
+> 反馈通道：https://github.com/bobbyliuzh06/agent-os-base/issues
 
 ## 这是什么
 
-一个**自演化 agent 底座**：把"能力生成器"本身作为第一个被设计、被演化的对象。
-任何具体需求都从 BASE 复制出独立工作区，跑完按门控回填，下一轮复制即获得累积遗产。
+agent-os 不追求"一次性交付"，而是把每个长期目标当作**持续责任**来管理——
+把它注册为一个 Project（charter + 记忆 + 真值 + 节奏 + 策略 + 审计），
+由底座按周期自动观察、提议、门禁、执行、记录、复盘，并把失败聚合成痛点、把
+反馈固化为记忆。三条铁律是硬约束：
 
-## 目录结构
+1. **记忆先于智能** —— 假设台账/决策日志/教训库 append-only，不可篡改；
+2. **真值先于自动化** —— 每个页面声称都有来源文件 + sha256 溯源；接不上真值
+   的场景显式降级声明，不编造；
+3. **人机分界按风险** —— 规则层对 BASE 写入一律拒绝，只有人工门禁能放行。
+
+## 当前状态（活系统，数字由管线生成）
+
+- **14 阶段调度**（每 4 小时）：pre-health → propose → gate → post → cleanup →
+  observe → 5a 自体检 → 5b 站点生成 → 6a 证据验证 → 6b 独立复核(pro 模型) →
+  6c 全局痛点汇总 → 6d 事件驱动策略池 → 6e 反馈真值轮询 → 6f 站点自动发布 →
+  advice → post-health → 7a 过程回归 → dashboard
+- **50 个管线脚本**（BASE/scripts）、**19 份回归台账**、**12 份治理归档**
+- **2 个项目族**：纸面投资组合（合成数据演练，已冻结为机制样本）、链接保鲜
+  知识库（真实 HTTP 探针真值）——验证机制跨域迁移
+- **痛点台账**：失败聚合、关闭必附证据、未治愈持续挂账
+- **真实世界反馈**：Issues/下载/stars/clones 轮询入真值，反馈回执写入可见通道
+
+## 快速开始（Windows 优先；跨平台为下一里程碑）
+
+```bat
+:: 1. 依赖：Python 3.9+（本机 3.9.13 验证） + PyYAML
+pip install -r requirements.txt
+:: 2. 克隆后无需改路径：入口自动定位仓库根（不再硬编码 D:/agent-os）
+agent-os.cmd help
+:: 3. 单次体检+站点刷新+发布（完整 14 阶段）
+BASE\scripts\dispatch_wrapper.bat
+:: 4. 查看公开站点（或本地生成件）
+start https://bobbyliuzh06.github.io/agent-os-base/
+```
+
+> 平台说明（诚实）：调度依赖 Windows 计划任务（AgentOS_EvolveDispatch），
+> 跨平台（cron/.sh）为已声明的下一里程碑，未经验证不宣称支持。
+
+## 目录
 
 ```
 BASE/
-├── AGENTS.md              # 会话启动规则（每次注入）
-├── README.md
-├── META/
-│   ├── CONSTITUTION.md    # 元宪法（可演化，需修正案流程）
-│   ├── GATE.md            # 回填门控标准
-│   ├── REGRESSION.md      # 跨领域回归探针集
-│   ├── CHANGELOG.md
-│   └── VERSION
-├── SEED/                  # 三个资料摘要 + 对话蒸馏（可替换种子）
-├── TEMPLATES/             # CONTEXT / PATTERN / SKILL / PROPOSAL 空白件
-├── skills/                # 当前生效技能（constitution/route-intake/trace-distill/propose-gate）
-├── governance/            # 归档已接受的 PROPOSAL
-├── new_task.sh            # 复制 BASE -> ../PROJECTS/<name>
-├── .gitignore
-└── WORKSPACE/             # （项目侧生成）raw/ wiki/ skills/ + PROPOSAL.md
+  scripts/      # 14 阶段管线（dispatch_wrapper.bat 为调度入口）
+  docs/         # PROJECT-LAYER.md(Project 层设计) / AGENT-OS-USAGE.md(生成) / charter.schema.json
+  META/         # CONSTITUTION/GATE/REGRESSION/config.json/VERSION
+  governance/   # 全部回流提案与发布档案（人工门禁留痕）
+  regression-runs/  # 台账（供应链证明、回归、体检、反馈轮询日志）
+site/           # 展示站发布快照（管线 6f 自动提交推送）
+tasks/          # 项目族（gitignored：chart/记忆/真值/审计，append-only）
 ```
 
-## 三层理念（来自 WikiSkill 种子）
+## 参与方式（唯一路径：提案 + 门禁 + 人工）
 
-- `raw/` 不可变轨迹 → `wiki/patterns/` 经验 → `skills/` 当前生效技能
-- 循环：采集 → 蒸馏 → 提案 → 门控 → 回滚（wiki 不回滚）
-- **执行 agent 只加载 skills，不直读 wiki**（避免抄答案导致轨迹退化）
+1. 任何修改先写 PROPOSAL（改动、动机、风险、回滚、验收）；
+2. 过确定性规则层（对 BASE 写入一律 reject → 升级人工）；
+3. 人工门禁批准后落盘；归档至 BASE/governance/；
+4. 外部反馈同样走痛点台账：登记 → 行动 → 证据回写 → 可见回执（Issue）。
 
-## 日常用法
+## 诚实局限（与展示站同步声明）
 
-```bash
-cd agent-os/BASE
-./new_task.sh 我的新需求
-# 在 DeepSeek Harness 选择 ../PROJECTS/我的新需求 作工作区 -> 新会话
-# 首条粘贴 BOOT 指令（见下方）
-```
-
-### BOOT 指令（粘贴到新会话首条）
-
-```
-请按本工作区 AGENTS.md、META/CONSTITUTION.md、META/GATE.md 工作。
-先执行 skills/route-intake 对以下需求做任务路由，给出计划等我确认后再动手。
-需求：<在此写你的需求>
-
-<若任务是自举 v0.1，用下方任务书覆盖>
-```
-
-## 自举 v0.1 任务书（首次运行用）
-
-> 复制到 `PROJECTS/bootstrap-v0.1/` 根，作为本轮需求。
-
-```
-当前任务是底座自举 v0.1：基于 SEED 摘要设计"通用演化底座"的最小可用交付物，包括
-1) 目录与 raw/wiki/skills/gate 流程（可参考但不可照搬现有 BASE，应独立设计后对比）
-2) 通用能力六维定义与验收（任务理解/可验证执行/失败诊断/边界控制/跨领域迁移/演化规程）
-3) 新任务 route 机制（何时单/多agent、何时提底座自身修改）
-4) 一个非软件探针验收集（制造业供应链中断预演、合规问卷、内容运营复盘各一例）
-所有产物放 WORKSPACE/，不直改 BASE；结束输出 PROPOSAL.md，按 GATE.md 自检。
-未动文件前先给实施计划等我确认。
-```
-
-## 回填流程（项目结束后）
-
-1. 审核项目内 `PROPOSAL.md` 是否通过 GATE
-2. `cp PROPOSAL.md BASE/governance/`
-3. 合并技能/模板/经验 → 更新 META/VERSION + CHANGELOG
-4. `cd BASE && git add -A && git commit && git tag v<new>`
-5. 用 `META/REGRESSION.md` 探针做回归，确认不降分
-
-## 铁律（不可绕过）
-
-- 高危操作（删除/外发/付费/凭据/生产写）一律 HITL
-- 对 BASE 的修改只能经 PROPOSAL + GATE，禁止会话内"自升级"
-- 种子内容（含本文件）均非不可修改；宪法修改需双倍验证 + 保留旧 tag
-
-## 版本
-
-当前 v0.1.0，详见 META/CHANGELOG.md。
+- 投资案例为合成数据演练，无真实市场含义；价值在决策链纪律而非收益；
+- task_layer.enabled=false（明确为下一里程碑候选）；
+- 访问量（Pages 流量）无公开 API，未展示即未编造；
+- 文档正在追平代码（v0.5.0 本轮更新）；跨平台与接口契约逐项推进中。

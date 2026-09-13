@@ -1,7 +1,8 @@
 @echo off
 setlocal
 if "%~1"=="" goto help
-if not defined AGENT_OS_ROOT set "AGENT_OS_ROOT=D:/agent-os"
+if not defined AGENT_OS_ROOT set "AGENT_OS_ROOT=%~dp0"
+if "%AGENT_OS_ROOT:~-1%"=="\" set "AGENT_OS_ROOT=%AGENT_OS_ROOT:~0,-1%"
 set "SCR=%AGENT_OS_ROOT%/BASE/scripts"
 set "PY=python"
 goto dispatch

@@ -1,6 +1,6 @@
 # Agent-OS 自举底座使用说明（自动生成）
-> 生成时间：**2026-09-12 18:46:19**　基础提交：`1818432`　Git 状态：**yes**
-> 已有标签：`v0.2.0`、`v0.3.0-base`
+> 生成时间：**2026-09-13 15:58:51**　基础提交：`ecaff30`　Git 状态：**yes**
+> 已有标签：`v0.2.0`、`v0.3.0-base`、`v0.4.0-base`、`v0.4.1-sandbox-live`、`v0.4.2-sandbox-hard`、`v0.4.3-cleanbase`、`v0.4.4-audit`、`v0.4.5`、`v0.4.6`、`v0.5.0`
 
 本文件由 `BASE/scripts/generate_usage_doc.py` 按当前代码/调度/运行状态生成。**请勿手改**；底座演进后重跑生成器即可同步。
 
@@ -14,53 +14,78 @@ Agent-OS 是“自提案+自巡检”的 agent 底座，不是自动改生产的
   - `cleanup_dispatch.py` (1564 B)
   - `cli_common.py` (2051 B)
   - `cmd_doctor.py` (2535 B)
-  - `cmd_evolve.py` (505 B)
+  - `cmd_evolve.py` (1672 B)
+  - `cmd_init.py` (5819 B)
   - `cmd_new.py` (3382 B)
-  - `cmd_run.py` (496 B)
+  - `cmd_publish.py` (5396 B)
+  - `cmd_quickcard.py` (2605 B)
+  - `cmd_run.py` (3983 B)
   - `cmd_sync.py` (923 B)
   - `cmd_watch.py` (1669 B)
-  - `config_loader.py` (5757 B)
+  - `code_sandbox_run.py` (17753 B)
+  - `code_sandbox_scan.py` (16786 B)
+  - `config_loader.py` (5759 B)
   - `dashboard.py` (3711 B)
-  - `dispatch_wrapper.bat` (3053 B)
+  - `dispatch_wrapper.bat` (5284 B)
   - `evolve_dispatch.py` (11907 B)
+  - `gate_review_adapter.py` (8766 B)
   - `gate_review_dispatch.py` (10666 B)
-  - `generate_usage_doc.py` (13498 B)
+  - `generate_usage_doc.py` (13541 B)
   - `health_check.py` (5433 B)
   - `merge_advisor.py` (5685 B)
   - `merge_apply.py` (4697 B)
+  - `nightly_check.bat` (1678 B)
   - `observe_report.py` (7379 B)
   - `postprocess_dispatch.py` (2778 B)
+  - `posture_check.py` (8295 B)
+  - `project_dual_review.py` (5599 B)
+  - `project_feedback_truth.py` (5566 B)
+  - `project_pain_rollup.py` (4601 B)
+  - `project_regression.py` (7149 B)
+  - `project_selfcheck.py` (4744 B)
+  - `project_site_gen.py` (20223 B)
+  - `project_site_publish.py` (3514 B)
+  - `project_strategy_pool.py` (8725 B)
+  - `project_verify_pains.py` (4849 B)
+  - `proposer.py` (11329 B)
   - `readiness_eval.py` (8121 B)
-  - `scan_hardcoded.py` (2580 B)
+  - `redact.py` (741 B)
+  - `release_add_tasks_submodule.py` (1710 B)
+  - `release_split_base.py` (1716 B)
+  - `sandbox_sitecustomize.py` (3097 B)
+  - `scan_hardcoded.py` (3860 B)
+  - `supplychain_check.py` (2165 B)
   - `sync_manager.py` (10561 B)
-  - `task_engine.py` (4697 B)
+  - `tag_audit.bat` (65 B)
+  - `tag_audit.py` (10046 B)
+  - `task_engine.py` (6750 B)
   - `task_lock.py` (1444 B)
-  - `watch_check.bat` (768 B)
+  - `watch_check.bat` (931 B)
 - 提案/门禁：`PENDING/`
 - 运行数据（通常 gitignore）：`BASE/regression-runs/`（dispatch.log、observe.csv、dashboard.txt、readiness.md、watch.log）
 
 ### 1.1 计划任务
 | 任务 | 运行命令 | 下次运行 | 上次结果 | 状态 |
 |---|---|---|---|---|
-| AgentOS_EvolveDispatch | cmd.exe /c D:\agent-os\BASE\scripts\dispatch_wrapper.bat | 2026/9/12 21:58:00 | 0 | Ready |
-| AgentOS_WatchCheck | cmd.exe /c D:\agent-os\BASE\scripts\watch_check.bat >> D:\agent-os\BASE\regression-runs\watch.log 2>&1 | 2026/9/13 8:00:00 | 0 | Ready |
+| AgentOS_EvolveDispatch | ? | ? | ? | ? |
+| AgentOS_WatchCheck | ? | ? | ? | ? |
 
 ### 1.2 最近观察
 ```
 ==================================================
-agent-os evolve dashboard  2026-09-12 18:30:07
+agent-os evolve dashboard  2026-09-13 15:33:05
 STATUS: healthy
-- observe rows (total / last 24): 4 / 4
+- observe rows (total / last 24): 20 / 20
 - all-rc-zero in window: True
 - unknown gates (window): 0
 - alerts_total (window sum): 0
-- decision distribution (all): {'manual': 4}
+- decision distribution (all): {'manual': 20}
 - accept+low candidates (all): 0
 - reasoning disk MB: 0.1
-- current git_sha: 31790b7
+- current git_sha: dba3d34
 ==================================================
 ```
-observe.csv 最新行：`2026-09-12 18:30:06,1,1,0,0,0,0,0,0,manual,,31790b7`
+observe.csv 最新行：`2026-09-13 15:32:55,1,1,0,0,0,0,0,0,manual,,dba3d34`
 
 ### 1.3 待处理门禁
 - `_smoke-propose-2026-09-12.gate.txt` 状态=reject 风险=medium
@@ -126,12 +151,12 @@ python "D:\agent-os\BASE\scripts\generate_usage_doc.py"  # 重生成本文件
 
 ## 7. 就绪度与何时讨论自动合并
 ```
-# readiness evaluation 2026-09-12 18:42:41
+# readiness evaluation 2026-09-13 08:00:01
 - verdict: **WAIT**
-- advice: 观察轮数不足，继续观察，至少达到 6 轮（约24小时）后再评估。
+- advice: 存在未满足条件；BLOCK 表示需先修复故障并重置基线，WAIT 表示需继续观察或由人工补充配置。
 
 ## checks
-- [FAIL] observe_rounds: got=4 expect=6
+- [PASS] observe_rounds: got=7 expect=6
 - [PASS] recent_rc_zero: got=True expect=True
 - [PASS] recent_unknown_zero: got=True expect=True
 - [PASS] recent_alerts_zero: got=True expect=True
@@ -146,8 +171,8 @@ python "D:\agent-os\BASE\scripts\generate_usage_doc.py"  # 重生成本文件
 - _smoke-propose-2026-09-12.gate.txt status=reject risk=medium real=False
 
 ## observe summary
-- total_after_baseline=4 recent_window=4
-- current_git_sha=31790b7
+- total_after_baseline=7 recent_window=6
+- current_git_sha=16bebbe
 ```
 全部条件（只读评估）：基线后≥6轮、近期 rc/unknown/alerts 全0、出现非 `_` 前缀的 accept+low 门禁、白名单 allow_paths 非空。READy 只是建议；仍须四锁全开并先 dry-run。
 
@@ -171,5 +196,5 @@ python "D:\agent-os\BASE\scripts\generate_usage_doc.py"  # 重生成本文件
 | 同类故障连出3轮 | 系统性问题 | 停 AgentOS_EvolveDispatch，人工排查；不自动改BASE规则 |
 
 ## 10. 版本化与自进化说明
-本文档由活系统生成，随底座一起演进。七阶段/脚本/调度/合并策略/就绪条件有变动，改生成器字段后重跑；对外变更另打 annotated tag。工具层提交与规则层提交分开，不改写已发布历史。
+本文档由活系统生成，随底座一起演进。14 阶段调度（含 5a-6f 的 Project 层阶段）/脚本/调度/合并策略/就绪条件有变动，改生成器字段后重跑；对外变更另打 annotated tag。工具层提交与规则层提交分开，不改写已发布历史。
 
