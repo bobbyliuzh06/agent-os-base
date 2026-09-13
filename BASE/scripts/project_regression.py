@@ -103,6 +103,19 @@ def main():
     except Exception as e:
         results.append({"id": "I-9", "name": "version-metadata-consistent", "pass": False, "detail": str(e)[:60]})
 
+    # I-10 蒸馏检视连续性（第五轮反馈挑刺一：每轮 reflow 必须回答"本轮是否有新轨迹可蒸馏"）
+    govs = sorted((ROOT / "BASE" / "governance").glob("PROPOSAL-BASE-reflow-*.md"),
+                  key=lambda p: p.stat().st_mtime)
+    if govs:
+        latest = govs[-1].read_text(encoding="utf-8")
+        has_check = "distillation_check" in latest
+        results.append({"id": "I-10", "name": "distillation-review-continuity",
+                        "pass": has_check,
+                        "detail": "latest=%s has_check=%s" % (govs[-1].name[:40], has_check)})
+    else:
+        results.append({"id": "I-10", "name": "distillation-review-continuity", "pass": False,
+                        "detail": "no governance archives"})
+
     GOLDEN.parent.mkdir(parents=True, exist_ok=True)
     GOLDEN.write_text(json.dumps(golden, ensure_ascii=False, indent=2), encoding="utf-8")
     failed = sum(1 for r in results if not r["pass"])
