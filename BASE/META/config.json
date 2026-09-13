@@ -1,6 +1,6 @@
 {
   "_comment": "Agent-OS base 配置骨架（v0.4 契约，当前仅文档约定，尚未被脚本读取）。所有路径后续通过 get_config() 参数化。",
-  "version": "0.4.0-roadmap",
+  "version": "0.5.0",
   "paths": {
     "base_dir": "${AGENT_OS_ROOT}/base",
     "profile_dir": "${AGENT_OS_ROOT}/profile",

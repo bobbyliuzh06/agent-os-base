@@ -55,12 +55,36 @@ def poll():
     rec["stars"] = jq_int(".stargazers_count")
     rec["watchers"] = jq_int(".subscribers_count")
     rec["forks"] = jq_int(".forks_count")
+    r3 = gh(["api", "repos/bobbyliuzh06/agent-os-base/traffic/clones",
+             "--jq", "{count: .count, uniques: .uniques}"])
+    if r3.returncode == 0:
+        try:
+            rec["clones_14d"] = json.loads(r3.stdout)
+        except json.JSONDecodeError:
+            rec["clones_14d"] = None
+            rec["clones_error"] = "parse"
+    else:
+        rec["clones_14d"] = None
+        rec["clones_error"] = "gh exit %s" % r3.returncode
     ok = rec.get("open_issues") is not None and rec.get("releases") is not None and rec.get("stars") is not None
     rec["feedback_status"] = "available" if ok else "degraded"
     return rec
 
+def delta(prev, cur):
+    """环比：关键指标相对上次轮询的变化（反馈本身的时间语义）。"""
+    d = {}
+    for k in ("open_issues", "stars", "watchers", "forks"):
+        if isinstance(prev.get(k), int) and isinstance(cur.get(k), int):
+            d[k] = cur[k] - prev[k]
+    pv = next((r["downloads"] for r in prev.get("releases") or [] if r["tag"] == "v0.5.0"), None)
+    cv = next((r["downloads"] for r in cur.get("releases") or [] if r["tag"] == "v0.5.0"), None)
+    if pv is not None and cv is not None:
+        d["v050_downloads"] = cv - pv
+    return d
+
 def main():
     snap = TRUTH / "feedback.json"
+    prev = None
     if not DRY and snap.exists():
         prev = json.loads(snap.read_text(encoding="utf-8"))
         try:
@@ -71,6 +95,8 @@ def main():
         except ValueError:
             pass
     rec = poll()
+    if prev:
+        rec["delta_vs_prev"] = delta(prev, rec)
     TRUTH.mkdir(parents=True, exist_ok=True)
     snap.write_text(json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")
     with open(TRUTH / "feedback-log.jsonl", "a", encoding="utf-8") as f:

@@ -220,7 +220,8 @@ a { color:var(--acc); }
 </head>
 <body><div class="wrap">
 <h1>agent-os</h1>
-<p>自托管 · 自审查 · 自演化的智能体底座 —— 一个把自己当作"持续责任"来管理的项目。</p>
+<p style="font-size:17px;color:var(--ink);">把长期目标变成<strong>被持续照顾、可审计、会自我演化</strong>的责任体——而不是一次性生成内容。</p>
+<p>自托管 · 自审查 · 自演化的智能体底座。谁需要它：想用 AI 长期维护一件事（投资研究 / 网站 / 文档库），并且要求它记教训、讲证据、不越界的人。</p>
 <div class="cards">
 <div class="card"><b>%s</b><span>仓库版本（git describe，真实输出）</span></div>
 <div class="card"><b>%d</b><span>管线脚本（BASE/scripts 真实清单）</span></div>

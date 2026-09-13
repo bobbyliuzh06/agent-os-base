@@ -93,6 +93,16 @@ def main():
             golden[k] = h
         results.append({"id": "I-7", "name": "site-iter-append-only", "pass": h == golden[k], "detail": h[:12]})
 
+    # I-9 版本元数据一致（第三方反馈 P-9 P0 项：config.json version 必须与 VERSION 文件一致）
+    try:
+        cfg = json.loads((ROOT / "BASE" / "META" / "config.json").read_text(encoding="utf-8"))
+        ver_file = (ROOT / "BASE" / "META" / "VERSION").read_text(encoding="utf-8").strip()
+        cfg_ver = cfg.get("version")
+        results.append({"id": "I-9", "name": "version-metadata-consistent",
+                        "pass": str(cfg_ver) == ver_file, "detail": "config=%s file=%s" % (cfg_ver, ver_file)})
+    except Exception as e:
+        results.append({"id": "I-9", "name": "version-metadata-consistent", "pass": False, "detail": str(e)[:60]})
+
     GOLDEN.parent.mkdir(parents=True, exist_ok=True)
     GOLDEN.write_text(json.dumps(golden, ensure_ascii=False, indent=2), encoding="utf-8")
     failed = sum(1 for r in results if not r["pass"])
