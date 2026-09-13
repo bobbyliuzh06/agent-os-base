@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-"""project_feedback_truth.py —— 真实世界反馈真值采集（BASE 组件草案，P-8 行动）。
-挂载于 dispatch 第 6e 步，带节流（上次轮询 <1 小时则跳过）：
-gh CLI 只读轮询 Issues 计数 + Release 下载计数 → 写入 P2 truth/feedback.json（快照）
-+ truth/feedback-log.jsonl（append 真值历史）+ regression-runs/feedback-truth.log。
-gh 不可用/失败如实记录 degraded，不伪造。AGENT_OS_DRY=1：输出写到脚本所在目录。"""
+"""project_feedback_truth.py v2 —— 真实反馈真值采集（加 stars/watchers/forks 真实参与信号）。
+挂载于 dispatch 第 6e 步，1h 节流；gh 只读轮询：
+Issues 数 / Release 下载数 / stars / watchers / forks → P2 truth/feedback.json + append log。
+失败如实 degraded。AGENT_OS_DRY=1：输出写到脚本所在目录。"""
 import io, json, os, pathlib, subprocess, sys
 from datetime import datetime, timezone, timedelta
 
@@ -19,8 +18,16 @@ TRUTH = pathlib.Path(__file__).parent / "truth-dry" if DRY else P2 / "truth"
 NOW = datetime.now(timezone.utc)
 
 def gh(args):
-    r = subprocess.run(["gh"] + args, capture_output=True, text=True, timeout=60)
-    return r
+    return subprocess.run(["gh"] + args, capture_output=True, text=True, timeout=60)
+
+def jq_int(jq_expr):
+    r = gh(["api", "repos/bobbyliuzh06/agent-os-base", "--jq", jq_expr])
+    if r.returncode == 0:
+        try:
+            return int(r.stdout.strip())
+        except ValueError:
+            return None
+    return None
 
 def poll():
     rec = {"polled_at": NOW.strftime("%Y-%m-%dT%H:%M:%SZ"), "source": "github-api (gh cli, read-only)"}
@@ -45,8 +52,11 @@ def poll():
     else:
         rec["releases"] = None
         rec["releases_error"] = "gh exit %s: %s" % (r2.returncode, (r2.stderr or "")[:120])
-    rec["feedback_status"] = ("available" if (rec.get("open_issues") is not None and rec.get("releases") is not None)
-                              else "degraded")
+    rec["stars"] = jq_int(".stargazers_count")
+    rec["watchers"] = jq_int(".subscribers_count")
+    rec["forks"] = jq_int(".forks_count")
+    ok = rec.get("open_issues") is not None and rec.get("releases") is not None and rec.get("stars") is not None
+    rec["feedback_status"] = "available" if ok else "degraded"
     return rec
 
 def main():
@@ -67,11 +77,14 @@ def main():
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     if not DRY:
         with open(REGR / "feedback-truth.log", "a", encoding="utf-8") as f:
-            f.write("[%s] issues=%s status=%s downloads_v050=%s\n" % (
-                rec["polled_at"], rec.get("open_issues"), rec["feedback_status"],
-                next((r["downloads"] for r in rec.get("releases") or [] if r["tag"] == "v0.5.0"), "?")))
-    print("PROJECT_FEEDBACK_TRUTH issues=%s status=%s dry=%s" % (
-        rec.get("open_issues"), rec["feedback_status"], DRY))
+            f.write("[%s] issues=%s stars=%s watchers=%s forks=%s downloads_v050=%s status=%s\n" % (
+                rec["polled_at"], rec.get("open_issues"), rec.get("stars"), rec.get("watchers"),
+                rec.get("forks"),
+                next((r["downloads"] for r in rec.get("releases") or [] if r["tag"] == "v0.5.0"), "?"),
+                rec["feedback_status"]))
+    print("PROJECT_FEEDBACK_TRUTH issues=%s stars=%s watchers=%s forks=%s status=%s dry=%s" % (
+        rec.get("open_issues"), rec.get("stars"), rec.get("watchers"), rec.get("forks"),
+        rec["feedback_status"], DRY))
     return 0
 
 if __name__ == "__main__":

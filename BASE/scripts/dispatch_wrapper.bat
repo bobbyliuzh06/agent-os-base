@@ -73,6 +73,11 @@ echo [%NOW%] [6e/7] project-feedback-truth: project_feedback_truth.py >> "%LOG%"
 set "RC6E=%ERRORLEVEL%"
 echo [%NOW%] [6e/7] project-feedback-truth rc=%RC6E% >> "%LOG%"
 
+echo [%NOW%] [6f/7] project-site-publish: project_site_publish.py >> "%LOG%"
+"%PYTHON_EXE%" "%SCRIPTS%/project_site_publish.py" >> "%LOG%" 2>&1
+set "RC6F=%ERRORLEVEL%"
+echo [%NOW%] [6f/7] project-site-publish rc=%RC6F% >> "%LOG%"
+
 echo [%NOW%] [5a/7] project-selfcheck: project_selfcheck.py >> "%LOG%"
 "%PYTHON_EXE%" "%SCRIPTS%/project_selfcheck.py" >> "%LOG%" 2>&1
 set "RC5A=%ERRORLEVEL%"
@@ -101,7 +106,7 @@ echo [%NOW%] [7a/7] project-regression: project_regression.py >> "%LOG%"
 set "RC7A=%ERRORLEVEL%"
 echo [%NOW%] [7a/7] project-regression rc=%RC7A% >> "%LOG%"
 
-echo [%NOW%] summary: pre=%RCH% propose=%RC1% gate=%RC2% post=%RC3% cleanup=%RC4% observe=%RC5% selfcheck=%RC5A% sitegen=%RC5B% pverify=%RC6A% preview=%RC6B% painrollup=%RC6C% pool=%RC6D% feedback=%RC6E% advice=%RC6% posthealth=%RCP% regression=%RC7A% dashboard=%RCD% >> "%LOG%"
+echo [%NOW%] summary: pre=%RCH% propose=%RC1% gate=%RC2% post=%RC3% cleanup=%RC4% observe=%RC5% selfcheck=%RC5A% sitegen=%RC5B% pverify=%RC6A% preview=%RC6B% painrollup=%RC6C% pool=%RC6D% feedback=%RC6E% sitepub=%RC6F% advice=%RC6% posthealth=%RCP% regression=%RC7A% dashboard=%RCD% >> "%LOG%"
 if not "%RC1%"=="0" ( echo [ALERT] propose rc=%RC1% >> "%LOG%" )
 if not "%RC2%"=="0" ( echo [ALERT] gate rc=%RC2% >> "%LOG%" )
 if not "%RC3%"=="0" ( echo [ALERT] post rc=%RC3% >> "%LOG%" )
