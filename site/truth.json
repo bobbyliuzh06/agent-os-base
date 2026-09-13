@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T16:23:51Z",
+  "generated_at": "2026-09-13T16:28:49Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1-19-gc224959",
+      "text": "v0.5.1-21-gaa448fb",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
@@ -63,7 +63,7 @@
       "label": "全局痛点汇总",
       "text": "projects=2 pains=26 open=18 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "f25a8614492cafd8be60bf1d960c97bf50f09697d686ff7a8e2d1ea2173be107"
+      "sha256": "46e5fb3394589dbb33c4f8bfaf3817efab51e37c0728bbd730e38100896d3db1"
     },
     {
       "id": "feedback-truth",
@@ -103,7 +103,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "97f5df37df85b780a7459c811543bbcedf99cd9bb03896e986a8273cb2ef836f",
-    "truth.json": "19c6949bec80f9a9c5a24727bf7f64f97617de23890d288a411a6432e57149a2"
+    "index.html": "ef2912586a504901bc8f235846d0348f7ea68f03fb8a8982abdf96fcd31a0901",
+    "truth.json": "f57832699093996df4302c0a46a07f6068c96cf57cb525ea9e5e95e436454ebe"
   }
 }
