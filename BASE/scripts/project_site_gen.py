@@ -263,29 +263,50 @@ def render(data):
                            % (esc(dy.get("total_babies")), babies_rows))
         else:
             babies_html = ""
-        diary_html = ('<p>周期 <b>%s</b> · 事件 <b>%s</b>（%s）· 世界 <b>%s</b> · 自主等级 <b>%s</b> · '
-                      '连续无事故 <b>%s</b> · 自改 <b>%s</b> 次（导航 %s + 认知 %s）· 影子运行 <b>%s</b> 次 · '
-                      '信号学习 <b>%s</b> 类 · 假设裁决 <b>%s</b> 条</p>'
-                      '%s'
-                      '<p>纸面组合（合成回放演练，无真实市场含义，不构成投资建议）：本金 100000 → 净值 '
+        # 数据驱动渲染（无手工 %-tuple）：stat 列表 + 子块拼接，杜绝参数错位
+        stats = [
+            ("周期", dy.get("cycles")),
+            ("事件", "%s（%s）" % (dy.get("events"), dy.get("chain"))),
+            ("世界", ",".join(dy.get("worlds", []))),
+            ("自主等级", dy.get("autonomy")),
+            ("连续无事故", dy.get("consecutive_clean_cycles")),
+            ("自改", "%s 次（导航 %s + 认知 %s）" % (dy.get("selfmods_nav"), dy.get("selfmods_nav"),
+                                                     dy.get("selfmods_cognition"))),
+            ("影子运行", "%s 次" % dy.get("shadow_runs")),
+            ("信号学习", "%s 类" % dy.get("signals_learned")),
+            ("假设裁决", "%s 条" % dy.get("hypotheses_confirmed")),
+        ]
+        stat_parts = []
+        for label, val in stats:
+            stat_parts.append('%s <b>%s</b>' % (esc(label), esc(val)))
+        stats_html = '<p>' + " · ".join(stat_parts) + '</p>'
+        babies_html = ""
+        if dy.get("babies"):
+            rows = "".join(
+                '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
+                    esc(b.get("name")), esc(b.get("domain")), esc(b.get("cycles")),
+                    esc(b.get("events")), esc("完整" if b.get("chain_ok") else "异常"),
+                    esc(b.get("autonomy") or b.get("born_with")))
+                for b in dy["babies"])
+            babies_html = ('<p>共 <b>%s</b> 个婴儿：</p>'
+                           '<table><tr><th>婴儿</th><th>域</th><th>周期</th><th>事件</th>'
+                           '<th>哈希链</th><th>自主/出生</th></tr>%s</table>'
+                           % (esc(dy.get("total_babies")), rows))
+        dd_txt = ("%.1f%%" % (pf.get("drawdown", 0) * 100) if pf.get("drawdown") is not None else "?")
+        paper_html = ('<p>纸面组合（合成回放演练，无真实市场含义，不构成投资建议）：本金 100000 → 净值 '
                       '<b>%s</b>（结算 %s 周期，回撤 %s）</p>'
-                      '%s'
-                      '<p class="note">成长日记为脱敏聚合：目标内容与真值路径默认私有；数字来自真实运行记录。</p>'
-                      % (esc(dy.get("cycles")), esc(dy.get("events")), esc(dy.get("chain")),
-                         esc(",".join(dy.get("worlds", []))),
-                          esc(dy.get("autonomy")),
-                         esc(dy.get("consecutive_clean_cycles")), esc(dy.get("selfmods_nav")),
-                         esc(dy.get("selfmods_nav")), esc(dy.get("selfmods_cognition")),
-                         esc(dy.get("shadow_runs")), esc(dy.get("signals_learned")),
-                         esc(dy.get("hypotheses_confirmed")), esc(pf.get("value")),
-                         esc(pf.get("settled_cycles")),
-                         babies_html,
-                         ("%.1f%%" % (pf.get("drawdown", 0) * 100) if pf.get("drawdown") is not None else "?"),
-                         (lambda ad: ('<p>适应实验（合成数据）：%s → %s → %s → %s</p>'
-                                      % (esc(ad["detect"]), esc(ad["defend"]), esc(ad["abandon"]),
-                                         "组合受保护（回撤 %.1f%%）" % (ad["portfolio_protected"]["drawdown"] * 100)
-                                         if ad.get("portfolio_protected") else ""))
-                          if ad else '')(dy.get("adaptation_experiment"))))
+                      % (esc(pf.get("value")), esc(pf.get("settled_cycles")), esc(dd_txt)))
+        ad = dy.get("adaptation_experiment")
+        adapt_html = ""
+        if ad:
+            prot = ad.get("portfolio_protected") or {}
+            dd = prot.get("drawdown")
+            prot_txt = "组合受保护（回撤 %.1f%%）" % (dd * 100) if isinstance(dd, (int, float)) else "组合受保护"
+            adapt_html = ('<p>适应实验（合成数据）：%s → %s → %s → %s</p>'
+                          % (esc(ad.get("detect")), esc(ad.get("defend")), esc(ad.get("abandon")),
+                             esc(prot_txt)))
+        diary_html = (stats_html + babies_html + paper_html + adapt_html
+                      + '<p class="note">成长日记为脱敏聚合：目标内容与真值路径默认私有；数字来自真实运行记录。</p>')
     else:
         diary_html = '<p class="note">婴儿成长日记未生成（baby_diary 尚未运行）。</p>'
     rg = data.get("real_goal")
