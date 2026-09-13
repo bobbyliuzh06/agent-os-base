@@ -149,13 +149,26 @@ def gather():
                 "winner_excess": winner.get("excess"), "gates": winner.get("gates_ok"),
                 "gates_total": winner.get("gates_total"),
                 "source": str(pool_audits[-1].relative_to(ROOT))}
-        claim("demo-data", "30秒体验演示数据",
+        claim("demo-data", "机制示意演示数据",
               "winner=%s excess=%+.4f gates=%s/%s（真实策略池审计）" % (
                   demo["winner"], demo["winner_excess"], demo["gates"], demo["gates_total"]),
               str(pool_audits[-1].relative_to(ROOT)))
+    # 9b) 真实目标（talk 入口）最新第一周期真值 —— 可核验路径，回应"真实目标不可溯源"
+    real_goal = None
+    talk_checks = sorted(ROOT.glob("tasks/talk-*/task-evolve/truth/check-*.json"))
+    if talk_checks:
+        rg = json.loads(talk_checks[-1].read_text(encoding="utf-8"))
+        real_goal = {"goal": rg.get("goal"), "checked_at": rg.get("checked_at"),
+                     "status": rg.get("status"), "path": str(talk_checks[-1].relative_to(ROOT))}
+        claim("real-goal", "真实目标第一周期真值",
+              "goal=%s status=%s checked=%s" % (rg.get("goal"), rg.get("status"), rg.get("checked_at")),
+              str(talk_checks[-1].relative_to(ROOT)))
+    else:
+        claim("real-goal", "真实目标第一周期真值", "尚未注册真实目标（agent-os talk 可用）", "N/A")
     return {"version": version, "scripts": scripts, "ledgers": ledgers, "cases": cases,
             "charter": charter, "fallback": fallback, "normal_total": normal,
-            "pain_rows": pain_rows, "feedback": feedback, "demo": demo}
+            "pain_rows": pain_rows, "feedback": feedback, "demo": demo,
+            "real_goal": real_goal}
 
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
@@ -216,6 +229,16 @@ def render(data):
            "https://github.com/bobbyliuzh06/agent-os-base/issues",
            "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/charter.schema.json",
            "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/PROJECT-LAYER.md"))
+    rg = data.get("real_goal")
+    if rg:
+        real_goal_html = ('<p>目标：%s | 状态：%s | 采集：%s</p>'
+                          '<p class="note">真值文件（可核验）：<a href="%s">%s</a>；'
+                          '第一周期默认走底座健康真值（链路验证），目标专属真值由 charter.truth_sources 声明后接入。</p>'
+                          % (esc(rg["goal"]), esc(rg["status"]), esc(rg["checked_at"]),
+                             "https://github.com/bobbyliuzh06/agent-os-base/blob/main/" + esc(rg["path"]),
+                             esc(rg["path"])))
+    else:
+        real_goal_html = '<p class="note">尚未注册真实目标——agent-os talk 说一句人话即可注册并跑通第一周期。</p>'
     if data.get("pain_rows") is None:
         pain_html = '<p class="note">全局痛点汇总未生成（pain_rollup 尚未运行）。</p>'
     else:
@@ -323,6 +346,9 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 </table>
 <p class="note">台账解析失败项会原样记录错误，不掩盖。</p>
 
+<h2>真实目标（talk 入口，可核验）</h2>
+%s
+
 <h2>全局痛点（跨项目）</h2>
 <p>痛点台账的跨项目汇总（pain_rollup，调度 6c 阶段生成）：底座当前在治什么、治好了什么，一表可见。</p>
 %s
@@ -370,7 +396,7 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 """ % (hero_scenario, hero_human, ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
        demo_html, participation_html,
        intent_txt, what_html, how_html,
-       script_list, ledger_rows, pain_html, feedback_html, case_rows, samples_html, fallback_note,
+       script_list, ledger_rows, real_goal_html, pain_html, feedback_html, case_rows, samples_html, fallback_note,
        lim_html, esc(fallback_note), it_rows, road_html, dir_html, pot_txt,
        c["feedback"]["channel"], now)
 

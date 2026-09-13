@@ -19,8 +19,11 @@ from gate_review_adapter import review as gate_review
 from proposer import deepseek_propose
 
 def slugify(text):
-    s = re.sub(r"[^a-z0-9]+", "-", text.lower())[:24].strip("-")
-    return s or "goal"
+    # 保留中文（\u4e00-\u9fff）与字母数字，其余转连字符；空结果用原文 sha256 前 8 位兜底
+    s = re.sub(r"[^\u4e00-\u9fff\w]+", "-", text)[:24].strip("-")
+    if not s:
+        s = "goal-" + hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
+    return s
 
 def rule_template(goal):
     return {
@@ -37,9 +40,10 @@ def rule_template(goal):
     }
 
 def main():
-    goal = " ".join(sys.argv[1:]).strip() if len(sys.argv) > 1 else ""
+    argv = [a for a in sys.argv[1:] if a != "--run"]
+    goal = " ".join(argv).strip() if argv else ""
     if not goal:
-        print("用法：agent-os talk \"帮我长期盯住一组重要链接\"")
+        print("用法：agent-os talk \"帮我长期盯住一组重要链接\" [--run]")
         return 1
     root = get_root()
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -86,10 +90,16 @@ def main():
         f.write(json.dumps({"id": "D-TALK-%s" % ts, "run_id": "talk", "action": "nl-to-charter",
                             "goal": goal, "live_llm": live, "gate": g["gate"], "decided_at": ts},
                            ensure_ascii=False) + "\n")
+    run_cycle = "--run" in sys.argv
     print("=== agent-os talk：自然语言 → charter 走通 ===\n"
-          "你的目标：%s\n起草方式：%s\n门禁：%s\n产物：%s\n"
-          "下一步：人工审阅 charter 后运行（agent-os run）；门禁保证范围合规，不替代你审内容。"
+          "你的目标：%s\n起草方式：%s\n门禁：%s\n产物：%s"
           % (goal, "LLM 起草" if live else "规则模板兜底", g["gate"], task / "charter.yaml"))
+    if run_cycle:
+        from talk_run_cycle import run_first_cycle
+        ok = run_first_cycle(task, goal)
+        return 0 if ok else 1
+    print("下一步：人工审阅 charter 后运行（agent-os run）；或 agent-os talk --run \"你的目标\" 立即跑第一周期。"
+          "门禁保证范围合规，不替代你审内容。")
     return 0
 
 if __name__ == "__main__":
