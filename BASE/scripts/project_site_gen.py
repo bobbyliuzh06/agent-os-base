@@ -121,11 +121,18 @@ def gather():
         fb = json.loads(fp.read_text(encoding="utf-8"))
         fb_rel = fb.get("releases") or []
         fb_v050 = next((r["downloads"] for r in fb_rel if r.get("tag") == "v0.5.0"), None)
+        fb_clones = fb.get("clones_14d")
+        clones_txt = ("count=%s/uniques=%s" % (fb_clones["count"], fb_clones["uniques"])
+                      if isinstance(fb_clones, dict) else (fb.get("clones_note") or "unavailable"))
+        fb_delta = fb.get("delta_vs_prev") or {}
+        delta_txt = ", ".join("%s%+d" % (k, v) for k, v in sorted(fb_delta.items())) or "首轮无基线"
         feedback = {"polled_at": fb.get("polled_at"), "open_issues": fb.get("open_issues"),
                     "status": fb.get("feedback_status"), "v050_downloads": fb_v050,
+                    "clones_txt": clones_txt, "delta_txt": delta_txt,
                     "releases": fb_rel}
         claim("feedback-truth", "真实世界反馈真值",
-              "issues=%s status=%s v0.5.0_downloads=%s" % (fb.get("open_issues"), fb.get("feedback_status"), fb_v050),
+              "issues=%s status=%s v0.5.0_downloads=%s clones=%s delta=%s" % (
+                  fb.get("open_issues"), fb.get("feedback_status"), fb_v050, clones_txt, delta_txt),
               str(fp.relative_to(ROOT)))
     else:
         feedback = None
@@ -175,9 +182,11 @@ def render(data):
         rel_rows = "".join('<tr><td>%s</td><td>%s</td></tr>' % (esc(r.get("tag")), esc(r.get("downloads")))
                            for r in (fb.get("releases") or []))
         feedback_html = ('<p>采集时间 %s（GitHub API 只读轮询，%s）。Issues 数：%s。</p>'
+                         '<p>14 天 clone：%s（count/uniques）。相对上次轮询环比：%s。</p>'
                          '<table><tr><th>Release</th><th>下载数</th></tr>%s</table>'
-                         '<p class="note">访问量（Pages 流量）尚无法经此 API 获取，未展示即未编造（P-8 待办）。</p>'
-                         % (esc(fb.get("polled_at")), esc(fb.get("status") or "?"), esc(fb.get("open_issues")), rel_rows))
+                         '<p class="note">访问量（Pages 流量）尚无法经此 API 获取，未展示即未编造（P-8 待办）；clone 数据不可得时显式标注 unavailable。</p>'
+                         % (esc(fb.get("polled_at")), esc(fb.get("status") or "?"), esc(fb.get("open_issues")),
+                            esc(fb.get("clones_txt") or "?"), esc(fb.get("delta_txt") or "?"), rel_rows))
     it_log = MEM / "iterations.jsonl"
     prev = [json.loads(l) for l in it_log.read_text(encoding="utf-8").splitlines()] if it_log.exists() else []
     it_rows = "".join(
@@ -223,7 +232,7 @@ a { color:var(--acc); }
 <p style="font-size:17px;color:var(--ink);">把长期目标变成<strong>被持续照顾、可审计、会自我演化</strong>的责任体——而不是一次性生成内容。</p>
 <p>自托管 · 自审查 · 自演化的智能体底座。谁需要它：想用 AI 长期维护一件事（投资研究 / 网站 / 文档库），并且要求它记教训、讲证据、不越界的人。</p>
 <div class="cards">
-<div class="card"><b>%s</b><span>仓库版本（git describe，真实输出）</span></div>
+<div class="card"><b>%s</b><span>站点快照生成于该提交（git describe；仓库 HEAD 可能更新）</span></div>
 <div class="card"><b>%d</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
 <div class="card"><b>%d</b><span>回归台账（真实字段）</span></div>
 <div class="card"><b>%d</b><span>项目案例（持续责任对象）</span></div>

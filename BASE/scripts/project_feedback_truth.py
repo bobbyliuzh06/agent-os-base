@@ -63,10 +63,13 @@ def poll():
         except json.JSONDecodeError:
             rec["clones_14d"] = None
             rec["clones_error"] = "parse"
+            rec["clones_note"] = "unavailable(parse)"
     else:
         rec["clones_14d"] = None
         rec["clones_error"] = "gh exit %s" % r3.returncode
-    ok = rec.get("open_issues") is not None and rec.get("releases") is not None and rec.get("stars") is not None
+        rec["clones_note"] = "unavailable(%s)" % (r3.stderr.strip()[:60] or "gh exit %s" % r3.returncode)
+    ok = (rec.get("open_issues") is not None and rec.get("releases") is not None
+          and rec.get("stars") is not None and rec.get("clones_14d") is not None)
     rec["feedback_status"] = "available" if ok else "degraded"
     return rec
 
