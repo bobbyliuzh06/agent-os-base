@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-REM agent-os evolve dispatch v0.3: pre-health gate + propose + gate + post + cleanup + observe + advice + post-health/dashboard
+REM agent-os evolve dispatch v0.5: pre + propose + gate + post + cleanup + observe + 5a selfcheck + 5b sitegen + 6a verify + 6b review + 6c rollup + 6d pool + 6e feedback + 6f publish + advice + post-health + 7a regression + dashboard
 set "PYTHON_EXE=python"
 if not defined AGENT_OS_ROOT set "AGENT_OS_ROOT=D:/agent-os"
 set "SCRIPTS=%AGENT_OS_ROOT%\BASE\scripts"
@@ -99,12 +99,14 @@ set "RCP=%ERRORLEVEL%"
 echo [%NOW%] post-health rc=%RCP% >> "%LOG%"
 "%PYTHON_EXE%" "%SCRIPTS%/dashboard.py" >> "%LOG%" 2>&1
 set "RCD=%ERRORLEVEL%"
-echo [%NOW%] dashboard rc=%RCD% >> "%LOG%"
+
 
 echo [%NOW%] [7a/7] project-regression: project_regression.py >> "%LOG%"
 "%PYTHON_EXE%" "%SCRIPTS%/project_regression.py" >> "%LOG%" 2>&1
 set "RC7A=%ERRORLEVEL%"
 echo [%NOW%] [7a/7] project-regression rc=%RC7A% >> "%LOG%"
+
+echo [%NOW%] dashboard rc=%RCD% >> "%LOG%"
 
 echo [%NOW%] summary: pre=%RCH% propose=%RC1% gate=%RC2% post=%RC3% cleanup=%RC4% observe=%RC5% selfcheck=%RC5A% sitegen=%RC5B% pverify=%RC6A% preview=%RC6B% painrollup=%RC6C% pool=%RC6D% feedback=%RC6E% sitepub=%RC6F% advice=%RC6% posthealth=%RCP% regression=%RC7A% dashboard=%RCD% >> "%LOG%"
 if not "%RC1%"=="0" ( echo [ALERT] propose rc=%RC1% >> "%LOG%" )

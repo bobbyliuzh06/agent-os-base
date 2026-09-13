@@ -1,0 +1,26 @@
+name: "上手卡住了（onboarding）"
+description: "第一次使用 agent-os 时卡在哪一步了？你的反馈会被登记为痛点并按证据回应。"
+title: "[上手卡住] 我卡在："
+labels: ["onboarding", "feedback"]
+body:
+  - type: textarea
+    id: where
+    attributes:
+      label: "卡在哪一步？"
+      description: "例如：clone 后不知道跑什么 / demo 命令报错 / 不知道 charter 怎么写 / 机制读不懂"
+      placeholder: "具体到哪条命令或哪个页面"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: "环境（选填）"
+      description: "操作系统 / Python 版本 / 是否 Windows"
+      placeholder: "Windows 11, Python 3.11"
+  - type: textarea
+    id: expectation
+    attributes:
+      label: "你期望发生什么？"
+      description: "一句人话描述你的目标"
+    validations:
+      required: false

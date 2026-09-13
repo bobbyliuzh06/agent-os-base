@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-os-base"
+version = "0.5.1"
+description = "自托管、自审查、自演化的智能体底座：真值溯源 + 经验蒸馏 + 宪法治理的长期 agent 运行时（研究原型，Windows 优先）"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Proprietary (source-available)"}
+dependencies = ["PyYAML>=5.4"]
+
+[project.scripts]
+agent-os = "agent_os_cli.cli:main"
+
+[tool.setuptools]
+packages = ["agent_os_cli"]

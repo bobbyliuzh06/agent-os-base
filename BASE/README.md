@@ -1,8 +1,19 @@
 # agent-os / BASE — 自托管、自审查、自演化的智能体底座
 
-> **版本 v0.5.0**（git tag v0.5.0；供应链台账 SUPPLYCHAIN-v0.5.0-provenance.json）。
+> **版本 v0.5.1**（git tag v0.5.1；供应链台账 SUPPLYCHAIN-v0.5.0-provenance.json）。
 > 公开展示站（真值驱动，管线每 4 小时自动刷新）：https://bobbyliuzh06.github.io/agent-os-base/
 > 反馈通道：https://github.com/bobbyliuzh06/agent-os-base/issues
+
+## 产品定位（2026-09-13 选定，回应第七轮"三不像"）
+
+**A · 开发者框架**：核心交付 = 可嵌入的治理与演化层（真值溯源 / 经验蒸馏 /
+宪法治理 / 痛点台账）。当前以"研究原型 + 自举演示"形态分发（Windows 优先）。
+
+- **ICP（目标用户）**：想长期运行自驱 agent、且对 LLM 幻觉与失控有真实痛感的
+  独立开发者与小团队（量化/研究背景优先——投资案例即为此人群的演示）。
+- **黄金路径（10 分钟）**：`pip install -e .` → `agent-os demo`（零配置零 LLM，
+  模板 charter + 一次真实门禁走通）→ 把 mission 换成你的长期目标 → `agent-os run`。
+- **不是**：终端用户一键工具（B 类）、纯论文示范（C 类）——若未来转型，定位声明随修宪更新。
 
 ## 这是什么
 
