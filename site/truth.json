@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T16:28:49Z",
+  "generated_at": "2026-09-13T16:29:59Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1-21-gaa448fb",
+      "text": "v0.5.1-22-gd4e7241",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
@@ -61,9 +61,9 @@
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=26 open=18 resolved=8 evidence_gaps=0",
+      "text": "projects=2 pains=27 open=19 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "46e5fb3394589dbb33c4f8bfaf3817efab51e37c0728bbd730e38100896d3db1"
+      "sha256": "f3c22734a51d0cf6052fd9503bbe6153944fc42c6d62f5cb51e85810013ec608"
     },
     {
       "id": "feedback-truth",
@@ -89,9 +89,9 @@
     {
       "id": "baby-diary",
       "label": "婴儿成长日记（脱敏聚合）",
-      "text": "cycles=58 events=1117 autonomy=L3 selfmods=50+3 paper_value=100000.0",
+      "text": "cycles=60 events=1166 autonomy=L3 selfmods=52+3 paper_value=102038.5",
       "source": "tasks\\project-layer-core-20260913\\task-evolve\\memory\\diary.json",
-      "sha256": "47db4e9703bfac42e75e442cf2d5854faa7bc467fe155bd1508df3f02c3f67f0"
+      "sha256": "63fa0a6dc4d26346f194d94b3d064238e47ed86300326ec27583c7b88e44a9cb"
     }
   ],
   "gate": {
@@ -103,7 +103,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "ef2912586a504901bc8f235846d0348f7ea68f03fb8a8982abdf96fcd31a0901",
-    "truth.json": "f57832699093996df4302c0a46a07f6068c96cf57cb525ea9e5e95e436454ebe"
+    "index.html": "c0ca2a9ddc8a934f49b7bfccf42e3de81f2a49e49cfd8b9fba262a54b72a7814",
+    "truth.json": "f5827e756041c28698f270bfbd57122ce81f70a7342d537ded7b693611a26668"
   }
 }
