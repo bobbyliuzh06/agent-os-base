@@ -153,18 +153,22 @@ def gather():
               "winner=%s excess=%+.4f gates=%s/%s（真实策略池审计）" % (
                   demo["winner"], demo["winner_excess"], demo["gates"], demo["gates_total"]),
               str(pool_audits[-1].relative_to(ROOT)))
-    # 9b) 真实目标（talk 入口）最新第一周期真值 —— 可核验路径，回应"真实目标不可溯源"
+    # 9b) 真实目标（talk 入口）聚合脱敏信息 —— 目标内容与真值文件默认私有，不公开
     real_goal = None
+    talk_dirs = sorted(ROOT.glob("tasks/talk-*/task-evolve"))
     talk_checks = sorted(ROOT.glob("tasks/talk-*/task-evolve/truth/check-*.json"))
     if talk_checks:
         rg = json.loads(talk_checks[-1].read_text(encoding="utf-8"))
-        real_goal = {"goal": rg.get("goal"), "checked_at": rg.get("checked_at"),
-                     "status": rg.get("status"), "path": str(talk_checks[-1].relative_to(ROOT))}
-        claim("real-goal", "真实目标第一周期真值",
-              "goal=%s status=%s checked=%s" % (rg.get("goal"), rg.get("status"), rg.get("checked_at")),
-              str(talk_checks[-1].relative_to(ROOT)))
+        healthy_count = sum(1 for c in talk_checks
+                            if json.loads(c.read_text(encoding="utf-8")).get("status") == "healthy")
+        real_goal = {"count": len(talk_dirs), "healthy_cycles": healthy_count,
+                     "last_checked": rg.get("checked_at"), "last_status": rg.get("status")}
+        claim("real-goal", "真实目标聚合状态（脱敏）",
+              "注册数=%d 健康周期=%d 最近状态=%s（目标内容与真值文件默认私有，未公开）" % (
+                  real_goal["count"], real_goal["healthy_cycles"], real_goal["last_status"]),
+              "tasks/talk-*/（私有任务区，不公开路径）")
     else:
-        claim("real-goal", "真实目标第一周期真值", "尚未注册真实目标（agent-os talk 可用）", "N/A")
+        claim("real-goal", "真实目标聚合状态（脱敏）", "尚未注册真实目标（agent-os talk 可用）", "N/A")
     return {"version": version, "scripts": scripts, "ledgers": ledgers, "cases": cases,
             "charter": charter, "fallback": fallback, "normal_total": normal,
             "pain_rows": pain_rows, "feedback": feedback, "demo": demo,
@@ -231,12 +235,11 @@ def render(data):
            "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/PROJECT-LAYER.md"))
     rg = data.get("real_goal")
     if rg:
-        real_goal_html = ('<p>目标：%s | 状态：%s | 采集：%s</p>'
-                          '<p class="note">真值文件（可核验）：<a href="%s">%s</a>；'
+        real_goal_html = ('<p>已注册真实目标 <b>%s</b> 个；健康检查周期 <b>%s</b> 次；最近检查：%s（%s）。</p>'
+                          '<p class="note">目标内容与真值文件默认私有（用户显式授权前不公开）。'
+                          '可溯源 ≠ 公开：证据链在用户的任务区，授权公开时才上站。'
                           '第一周期默认走底座健康真值（链路验证），目标专属真值由 charter.truth_sources 声明后接入。</p>'
-                          % (esc(rg["goal"]), esc(rg["status"]), esc(rg["checked_at"]),
-                             "https://github.com/bobbyliuzh06/agent-os-base/blob/main/" + esc(rg["path"]),
-                             esc(rg["path"])))
+                          % (esc(rg["count"]), esc(rg["healthy_cycles"]), esc(rg["last_checked"]), esc(rg["last_status"])))
     else:
         real_goal_html = '<p class="note">尚未注册真实目标——agent-os talk 说一句人话即可注册并跑通第一周期。</p>'
     if data.get("pain_rows") is None:
@@ -300,8 +303,8 @@ a { color:var(--acc); }
 </head>
 <body><div class="wrap">
 <h1>agent-os</h1>
-<p style="font-size:17px;color:var(--ink);">把长期目标变成<strong>被持续照顾、可审计、会自我演化</strong>的责任体——而不是一次性生成内容。</p>
-<p>自托管 · 自审查 · 自演化的智能体底座。谁需要它：想用 AI 长期维护一件事（投资研究 / 网站 / 文档库），并且要求它记教训、讲证据、不越界的人。</p>
+<p style="font-size:18px;color:var(--ink);"><strong>把"帮我长期盯住一件事"这句话，变成一个记教训、讲证据、不越界的持续责任体。</strong></p>
+<p>给有长期目标的人用的运行时——你负责说目标，它负责持续照顾、每一步可追溯、越界会被拦住。</p>
 <p>%s</p>
 <p style="color:var(--acc);">%s</p>
 <div class="cards">
@@ -335,7 +338,8 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 
 <h2>演化闭环</h2>
 <div class="flow"><span>propose</span><span>gate</span><span>execute</span><span>postprocess</span><span>observe</span><span>advice</span><span>dashboard</span></div>
-<p>任何对 BASE 规则的修改都必须经过提案 + 门禁 + 人审：先证明，再落盘。当前管线脚本清单（真实文件名）：</p>
+<p>任何对 BASE 规则的修改都必须经过提案 + 门禁 + 人审：先证明，再落盘。</p>
+<details><summary>机制档案（脚本清单与台账，给想深挖的人）</summary>
 <p class="note">%s</p>
 
 <h2>当前真实状态</h2>
@@ -345,6 +349,7 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 %s
 </table>
 <p class="note">台账解析失败项会原样记录错误，不掩盖。</p>
+</details>
 
 <h2>真实目标（talk 入口，可核验）</h2>
 %s
@@ -389,7 +394,7 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 <p class="note">发布状态：本站已随 v0.5.0 上线 GitHub Pages；访问/反馈指标接入为 P-8 待办，接入前本声明继续生效。</p>
 
 <div class="foot">
-<p>本页面由 <code>project_site_gen.py</code> 于 %s 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>
+<p>本页面由 <code>project_site_gen.py</code> 于 %s 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p><p>本站为 agent-os 唯一官方公开入口（GitHub Pages）；其他同名部署（如旧版 workbuddy 链接）不属本仓库维护范围，以本站为准。</p>
 <p>免责声明：研究工具定位，不构成投资建议。本站内容如实呈现底座状态，不夸大任何能力。</p>
 </div>
 </div></body></html>
