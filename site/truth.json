@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T12:03:03Z",
+  "generated_at": "2026-09-13T12:36:59Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1-9-gf226a41",
+      "text": "v0.5.1-12-g49b124b",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
@@ -61,9 +61,9 @@
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=22 open=14 resolved=8 evidence_gaps=0",
+      "text": "projects=2 pains=23 open=15 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "5d497c23fe92d731ce26899a3ee6d8fe4c9a569dc6753d2841d8693b75f37bed"
+      "sha256": "8a9f79515d923cda34f0294bc9b1f6a5bd2bba322011ad0a0a8c314642e35700"
     },
     {
       "id": "feedback-truth",
@@ -81,10 +81,10 @@
     },
     {
       "id": "real-goal",
-      "label": "真实目标第一周期真值",
-      "text": "goal=帮我长期盯住一组重要链接 status=healthy checked=2026-09-13T20:02:00Z",
-      "source": "tasks\\talk-帮我长期盯住一组重要链接-20260913T120151Z\\task-evolve\\truth\\check-20260913T200200Z.json",
-      "sha256": "f89c136328d7d029d6ca5704ca95a24086866fdb879d59b42e75ea4582322352"
+      "label": "真实目标聚合状态（脱敏）",
+      "text": "注册数=6 健康周期=5 最近状态=healthy（目标内容与真值文件默认私有，未公开）",
+      "source": "tasks/talk-*/（私有任务区，不公开路径）",
+      "sha256": null
     }
   ],
   "gate": {
@@ -96,7 +96,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "f348f90962a7a83835bd9f0c6a66a813e2134579d779e13a16afd505b57b79b4",
-    "truth.json": "877360e17178daddae2d07bc8c2ac7f8ea5dd3bb593ab83dcb212a82fdec951e"
+    "index.html": "3ef3dc73fde00515f50a472cf828376e656d62741043e9b9c8e2e0faba6800ed",
+    "truth.json": "68dfa713151f490082f552a35f413153f57430d23a1f4337897589a9b1d049bc"
   }
 }
