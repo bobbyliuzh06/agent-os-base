@@ -260,7 +260,7 @@ a { color:var(--acc); }
 
 <h2>反馈</h2>
 <p>本站是底座自身的展示窗口。你的反馈就是演化的真实世界输入：<a href="%s">GitHub Issues →</a></p>
-<p class="note">当前 github.enabled=false，本机不自动 push；本站为本地生成，发布待人工确认后走发布 SOP。</p>
+<p class="note">发布状态：本站已随 v0.5.0 上线 GitHub Pages；访问/反馈指标接入为 P-8 待办，接入前本声明继续生效。</p>
 
 <div class="foot">
 <p>本页面由 <code>project_site_gen.py</code> 于 %s 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>

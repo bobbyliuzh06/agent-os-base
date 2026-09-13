@@ -32,9 +32,9 @@ a { color:var(--acc); }
 <h1>agent-os</h1>
 <p>自托管 · 自审查 · 自演化的智能体底座 —— 一个把自己当作"持续责任"来管理的项目。</p>
 <div class="cards">
-<div class="card"><b>v0.4.6-2-g16bebbe</b><span>仓库版本（git describe，真实输出）</span></div>
+<div class="card"><b>v0.5.0-1-g52b8e16</b><span>仓库版本（git describe，真实输出）</span></div>
 <div class="card"><b>48</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
-<div class="card"><b>18</b><span>回归台账（真实字段）</span></div>
+<div class="card"><b>19</b><span>回归台账（真实字段）</span></div>
 <div class="card"><b>2</b><span>项目案例（持续责任对象）</span></div>
 </div>
 
@@ -57,7 +57,7 @@ a { color:var(--acc); }
 <p>本表来自仓库真实文件，每项声称的来源与 sha256 记录在 <a href="truth.json">truth.json</a>。</p>
 <table>
 <tr><th>回归台账</th><th>schema</th><th>status</th><th>enabled</th></tr>
-<tr><td>MANIFEST-v0.4.3-cleanbase.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.4-audit.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.5.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.6.json</td><td>—</td><td>—</td><td>enabled_from_v0.4.6</td></tr><tr><td>nightly-20260912.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>nightly-20260913.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev1.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev3.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.5-rev1.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.5-rev2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>PREFLIGHT-v0.4.2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>project-pain-verification.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>project-regression.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>SUPPLYCHAIN-v0.4.5.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>SUPPLYCHAIN-v0.4.6-provenance.json</td><td>1.1</td><td>final</td><td>True</td></tr><tr><td>SUPPLYCHAIN-v0.4.6-rev1.json</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>MANIFEST-v0.4.3-cleanbase.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.4-audit.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.5.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>MANIFEST-v0.4.6.json</td><td>—</td><td>—</td><td>enabled_from_v0.4.6</td></tr><tr><td>nightly-20260912.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>nightly-20260913.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev1.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3-rev3.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.3.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.5-rev1.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>POSTURE-v0.4.5-rev2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>PREFLIGHT-v0.4.2.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>project-pain-verification.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>project-regression.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>SUPPLYCHAIN-v0.4.5.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>SUPPLYCHAIN-v0.4.6-provenance.json</td><td>1.1</td><td>final</td><td>True</td></tr><tr><td>SUPPLYCHAIN-v0.4.6-rev1.json</td><td>—</td><td>—</td><td>—</td></tr><tr><td>SUPPLYCHAIN-v0.5.0-provenance.json</td><td>1.1</td><td>final</td><td>True</td></tr>
 </table>
 <p class="note">台账解析失败项会原样记录错误，不掩盖。</p>
 
@@ -69,7 +69,7 @@ a { color:var(--acc); }
 <p>案例是让机制可被理解的样本：每个案例标注它演示了底座的哪一部分。</p>
 <table>
 <tr><th>案例</th><th>章程</th><th>周期</th><th>期末净值</th><th>模式</th></tr>
-<tr><td>project-layer-p0-20260912</td><td>portfolio-cn300-p0</td><td>4</td><td>1.0275</td><td>paper-trading, synthetic-replay, rule-based proposer</td></tr><tr><td>project-layer-p1-20260912</td><td>portfolio-cn300-p0</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>project-layer-p0-20260912</td><td>portfolio-cn300-p0</td><td>4</td><td>1.0275</td><td>paper-trading, synthetic-replay, rule-based proposer</td></tr><tr><td>project-layer-p1-20260912</td><td>portfolio-cn300-p0</td><td>8</td><td>0.993052</td><td>paper-trading, synthetic-replay, rule+LLM proposer, STRESS_SIM, strategy-pool, sample-out (合成数据演练)</td></tr>
 </table>
 <ul><li>样本①纸面投资组合：演示评估域(paper-performance)+痛点台账+策略竞赛——痛点 P-2 从'策略跑输'经诊断、人工裁决、修数据、重赛到策略被证据替换的完整弧线。</li><li>样本②本站自身：演示真值溯源(每项声称有来源+sha256)与迭代记忆(本页渲染自己的 iterations.jsonl)。</li><li>样本③七段管线体检：演示漂移检测(41 个管线脚本快照)与过程健康评估域(process-health)。</li></ul>
 <p class="note">P1 正常周期 6 个中，LLM live 成功 3、规则回退 3 次（压力周期为规则型设计，未计入）。<br>免责声明：研究工具定位，不构成投资建议。组合数字均为合成数据演练结果。</p>
@@ -82,7 +82,7 @@ a { color:var(--acc); }
 <p>本页渲染自己的迭代记忆（memory/iterations.jsonl）：每次再生成都是真实记录，"交付后持续维护"不是口号。</p>
 <table>
 <tr><th>迭代</th><th>时间(UTC)</th><th>门禁</th><th>声称数</th><th>生成脚本sha</th></tr>
-<tr><td>#1</td><td>2026-09-13T02:56:37Z</td><td>accept</td><td>6</td><td>b1ff680b4e46</td></tr><tr><td>#2</td><td>2026-09-13T02:57:32Z</td><td>accept</td><td>7</td><td>2e3ac9b986e7</td></tr><tr><td>#3</td><td>2026-09-13T02:58:37Z</td><td>accept</td><td>7</td><td>829350df26dd</td></tr><tr><td>#4</td><td>2026-09-13T02:59:13Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#5</td><td>2026-09-13T03:20:51Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#6</td><td>2026-09-13T03:38:57Z</td><td>accept</td><td>7</td><td>5363057b29d9</td></tr><tr><td>#7</td><td>2026-09-13T03:44:06Z</td><td>accept</td><td>8</td><td>6fa3985465cd</td></tr><tr><td>#8</td><td>2026-09-13T03:52:51Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#9</td><td>2026-09-13T03:53:49Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#10</td><td>2026-09-13T04:01:06Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#11</td><td>2026-09-13T04:03:56Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#12</td><td>2026-09-13T04:05:10Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#13</td><td>2026-09-13T04:08:10Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#14</td><td>2026-09-13T04:09:03Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#15</td><td>2026-09-13T04:11:27Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#16</td><td>2026-09-13T04:13:59Z</td><td colspan="3">本次（正在生成）</td></tr>
+<tr><td>#1</td><td>2026-09-13T02:56:37Z</td><td>accept</td><td>6</td><td>b1ff680b4e46</td></tr><tr><td>#2</td><td>2026-09-13T02:57:32Z</td><td>accept</td><td>7</td><td>2e3ac9b986e7</td></tr><tr><td>#3</td><td>2026-09-13T02:58:37Z</td><td>accept</td><td>7</td><td>829350df26dd</td></tr><tr><td>#4</td><td>2026-09-13T02:59:13Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#5</td><td>2026-09-13T03:20:51Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#6</td><td>2026-09-13T03:38:57Z</td><td>accept</td><td>7</td><td>5363057b29d9</td></tr><tr><td>#7</td><td>2026-09-13T03:44:06Z</td><td>accept</td><td>8</td><td>6fa3985465cd</td></tr><tr><td>#8</td><td>2026-09-13T03:52:51Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#9</td><td>2026-09-13T03:53:49Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#10</td><td>2026-09-13T04:01:06Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#11</td><td>2026-09-13T04:03:56Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#12</td><td>2026-09-13T04:05:10Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#13</td><td>2026-09-13T04:08:10Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#14</td><td>2026-09-13T04:09:03Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#15</td><td>2026-09-13T04:11:27Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#16</td><td>2026-09-13T04:13:59Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#17</td><td>2026-09-13T04:19:49Z</td><td colspan="3">本次（正在生成）</td></tr>
 </table>
 
 <h2>路线图与潜在方向</h2>
@@ -95,10 +95,10 @@ a { color:var(--acc); }
 
 <h2>反馈</h2>
 <p>本站是底座自身的展示窗口。你的反馈就是演化的真实世界输入：<a href="https://github.com/bobbyliuzh06/agent-os-base/issues">GitHub Issues →</a></p>
-<p class="note">当前 github.enabled=false，本机不自动 push；本站为本地生成，发布待人工确认后走发布 SOP。</p>
+<p class="note">发布状态：本站已随 v0.5.0 上线 GitHub Pages；访问/反馈指标接入为 P-8 待办，接入前本声明继续生效。</p>
 
 <div class="foot">
-<p>本页面由 <code>project_site_gen.py</code> 于 2026-09-13T04:13:59Z 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>
+<p>本页面由 <code>project_site_gen.py</code> 于 2026-09-13T04:19:49Z 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>
 <p>免责声明：研究工具定位，不构成投资建议。本站内容如实呈现底座状态，不夸大任何能力。</p>
 </div>
 </div></body></html>

@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-09-13T04:13:59Z",
+  "generated_at": "2026-09-13T04:19:49Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.4.6-2-g16bebbe",
+      "text": "v0.5.0-1-g52b8e16",
       "source": ".git/refs/tags",
-      "sha256": "3dd7894e65da507782a77d4e0d151db20e30ca07db118b93a757607bae716681"
+      "sha256": "2a07379b0386ed0959163cf9d90857c7f2cd7a96ebd776fa57589036b0910d8a"
     },
     {
       "id": "pipeline-scripts",
@@ -19,16 +19,16 @@
     {
       "id": "regression-ledgers",
       "label": "回归台账",
-      "text": "[{\"file\": \"MANIFEST-v0.4.3-cleanbase.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.4-audit.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.6.json\", \"schema\": null, \"status\": null, \"enabled\": \"enabled_from_v0.4.6\"}, {\"file\": \"nightly-20260912.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"nightly-20260913.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"PREFLIGHT-v0.4.2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-pain-verification.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-regression.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.6-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}, {\"file\": \"SUPPLYCHAIN-v0.4.6-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}]",
+      "text": "[{\"file\": \"MANIFEST-v0.4.3-cleanbase.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.4-audit.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.6.json\", \"schema\": null, \"status\": null, \"enabled\": \"enabled_from_v0.4.6\"}, {\"file\": \"nightly-20260912.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"nightly-20260913.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"PREFLIGHT-v0.4.2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-pain-verification.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-regression.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.6-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}, {\"file\": \"SUPPLYCHAIN-v0.4.6-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.5.0-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}]",
       "source": "BASE/regression-runs",
-      "sha256": "64d126d8ca457648cba53b788fd8081f2615243315a6a784525c6bb6922622a7"
+      "sha256": "c4e04b82a75f0c49ad12357aba5992524cf5d6ca64769ea01adc99414700425e"
     },
     {
       "id": "project-cases",
       "label": "案例汇总",
-      "text": "[{\"dir\": \"project-layer-p0-20260912\", \"charter_id\": \"portfolio-cn300-p0\", \"cycles\": 4, \"final_value\": 1.0275, \"mode\": \"paper-trading, synthetic-replay, rule-based proposer\"}, {\"dir\": \"project-layer-p1-20260912\", \"charter_id\": \"portfolio-cn300-p0\", \"cycles\": null, \"final_value\": null, \"mode\": null}]",
+      "text": "[{\"dir\": \"project-layer-p0-20260912\", \"charter_id\": \"portfolio-cn300-p0\", \"cycles\": 4, \"final_value\": 1.0275, \"mode\": \"paper-trading, synthetic-replay, rule-based proposer\"}, {\"dir\": \"project-layer-p1-20260912\", \"charter_id\": \"portfolio-cn300-p0\", \"cycles\": 8, \"final_value\": 0.993052, \"mode\": \"paper-trading, synthetic-replay, rule+LLM proposer, STRESS_SIM, strategy-pool, sample-out (合成数据演练)\"}]",
       "source": "tasks/project-layer-*/task-evolve/audit/summary.json",
-      "sha256": "c5e61a946ddc2ee0827afb0784e6441fb18acc3b8f36c8ec1bd9baf7ef9cf467"
+      "sha256": "11e5f9a064089a2371a4a27b8c0a547e3da9f896e1fe0150c7e036aa5a4b7f5d"
     },
     {
       "id": "p1-llm-fallback",
@@ -75,7 +75,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "e2a2997234aeb3736dc97ea036bfb8c2e04cdfcd8d63a4a6f9aa06bf2c8312d8",
-    "truth.json": "c61c244ef9eb10f7079604136e1d48b0bca1916f421f8b5000e5f0505f1fa123"
+    "index.html": "1dd2dd44bba936771b819549117ddd1c1176ad17c0a3fdcc0e4c5738ddd40948",
+    "truth.json": "6c0ed548bc145be62fec7c2f0dd77027d7f37c2bff53d3e781cf7f782c5a23db"
   }
 }
