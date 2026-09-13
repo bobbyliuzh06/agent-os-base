@@ -8,7 +8,11 @@
     "registry": "${AGENT_OS_ROOT}/tasks/registry.json"
   },
   "env": {
-    "api_key_source": ["winreg:DEEPSEEK_API_KEY", "env:DEEPSEEK_API_KEY", ".env"],
+    "api_key_source": [
+      "winreg:DEEPSEEK_API_KEY",
+      "env:DEEPSEEK_API_KEY",
+      ".env"
+    ],
     "key_env_name": "DEEPSEEK_API_KEY"
   },
   "schedule": {
@@ -25,15 +29,23 @@
   },
   "task_layer": {
     "enabled": false,
-    "commands": ["sync", "new", "run", "watch", "evolve", "doctor", "archive"],
+    "commands": [
+      "sync",
+      "new",
+      "run",
+      "watch",
+      "evolve",
+      "doctor",
+      "archive"
+    ],
     "single_base_only": true,
     "registry_dedup": true,
     "per_task_lock": true
   },
   "github": {
-    "enabled": false,
+    "enabled": true,
     "mode": "git",
-    "repo_url": "",
+    "repo_url": "https://github.com/bobbyliuzh06/agent-os-base.git",
     "branch": "main",
     "base_subtree": "BASE",
     "release_asset_pattern": "agent-os-base-*.zip",

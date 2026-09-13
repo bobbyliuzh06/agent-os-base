@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.5.0 2026-09-13
+- Project 层（持久责任对象）设计文档入 BASE/docs（v0.3：七要素/三条铁律/评估域抽象/独立制衡）
+- 管线接管：调度 10→12 阶段（5a 自体检、5b 站点生成、6a 证据验证、6b 独立复核(pro 模型)、6c 全局痛点汇总、6d 事件驱动策略池、7a 过程回归）
+- 机制：痛点台账（append-only+唯一行身份）、评估与回写回路、确定性门禁对 BASE 写入永拒
+- 治理：8 份回流提案 + 1 份发布授权归档至 governance/
+- 发布：github.enabled 开启，展示站随发布上线 GitHub Pages
+- 备注：v0.3.x/v0.4.x 以 git tag 存在（v0.4.6 供应链台账完整），本文件当时未同步维护，故无对应条目
+
 ## v0.1.0 (初始版本)
 - 建立 BASE 骨架：AGENTS.md、META（CONSTITUTION/GATE/REGRESSION/CHANGELOG）、SEED、TEMPLATES、skills、governance
 - 种子技能：constitution / route-intake / trace-distill / propose-gate
