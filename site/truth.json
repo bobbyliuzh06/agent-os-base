@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-13T09:29:59Z",
+  "generated_at": "2026-09-13T11:08:22Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1",
+      "text": "v0.5.1-5-gdcff191",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
     {
       "id": "pipeline-scripts",
       "label": "七段管线脚本清单",
-      "text": "50 个脚本：cleanup_dispatch.py、cli_common.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_site_publish.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat",
+      "text": "51 个脚本：cleanup_dispatch.py、cli_common.py、cmd_demo.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_site_publish.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat",
       "source": "BASE/scripts",
-      "sha256": "cf944e3ec35bd59bf3f38bed90d05c438d2d7d49744ad2c57cab9f6a10486f0b"
+      "sha256": "78c0f4db87b50c29f1f1ac228d449aad17af20f9570e7cd29c18a308a150a919"
     },
     {
       "id": "regression-ledgers",
@@ -42,35 +42,35 @@
       "label": "真实局限",
       "text": "- 组合案例（P0/P1）使用合成数据演练，无真实市场含义；其价值在决策链纪律而非收益。\n- task_layer.enabled=false：任务层当前关闭（明确为下一里程碑候选，见 roadmap），任务以人工/会话方式推进，不声称自驱常驻。\n- 发布通道已开启（v0.5.0）：本站随发布上线 GitHub Pages；访问量/反馈指标尚未接入（P-8 待办），在接入前本声明继续生效。\n- LLM 提议器曾因长 JSON 输出截断而 0/3 回退（痛点 P-1）；已用短输出约束+重试修复，证据为 run-20260913T031934Z live 3/3。残余风险：超长复杂提议仍可能截断。\n- 回撤纪律在原型中为'记录并继续'的只读审查，尚未接真实风控动作。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "4c589e9e0f325f84120aa4ff6d5c3b45f0bbe23a6f9d065a4c4356c670f88792"
+      "sha256": "ffb5df67aa87ae90ed4d61297804af4ad6e4427513fbee636476d7dd129b0faf"
     },
     {
       "id": "roadmap",
       "label": "路线图",
       "text": "- P0（已完成）：纸面投资组合四周期闭环，假设可证伪、决策链完整、回撤纪律先于收益。\n- P1（已完成）：LLM 提议器接入 + 连续持仓压力演练，回撤纪律真实触发；策略池竞赛+样本外验证后冻结案例层。\n- P2（进行中）：本站——底座机制讲解窗口，已由管线接管（5b 阶段每 4 小时自动刷新）。\n- P3（已完成）：案例③ 七段管线注册为 Project；自体检/站点/验证器/复核人/回归集挂入调度（5a/5b/6a/6b/7a）。\n- 发布通道（已完成）：v0.5.0 发布，本站上线 GitHub Pages；访问/反馈真值接入为 P-8 待办。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "4c589e9e0f325f84120aa4ff6d5c3b45f0bbe23a6f9d065a4c4356c670f88792"
+      "sha256": "ffb5df67aa87ae90ed4d61297804af4ad6e4427513fbee636476d7dd129b0faf"
     },
     {
       "id": "narrative",
       "label": "机制讲解叙事(初衷/用法/案例样本/方向/愿景)",
       "text": "{\"intent\": \"架构初衷：agent-os 不追求\\\"一次性交付\\\"，而是把每个目标当作持续责任来管理—— 记忆先于智能、真值先于自动化、人机分界按风险。底座自身的演化走同一套机制： 轨迹采集 → 模式提取 → 提案 → 门控验证 → 回滚，即\\\"用系统演化系统\\\"。\\n\", \"what_is\": [\"是：一个自托管、自审查、自演化的智能体底座；Project 层把长期目标注册为持续责任对象。\", \"是：一套把失败聚合为痛点、把反馈固化为记忆、让每个提案都必须回答'治哪个痛点'的演化机制。\", \"不是：单次任务自动化工具；不是生成内容后即弃的流程；不是绕过人工的高危执行器。\"], \"how_to_use\": [\"使用者路径：把你的长期目标写成 charter（身份/约束/评估域/审批点），底座按节奏观察→提议→门禁→执行→记录→复盘。\", \"提案者路径：任何 BASE 修改先写 PROPOSAL.md，过确定性规则层，再由人工门禁裁决；四锁（auto_merge/all_probe/merge_acks/白名单）可关停自动合并。\", \"维护者路径：体验证过的经验回流 BASE（governance 归档），未经验证的经验留在任务层草稿；执行与经验隔离。\", \"评估域随场景声明：投资=绩效评估；网页按目的=访问/转化/留存/美工评审；底座自身=过程健康指标。机制不变，表象随场景。\"], \"cases_as_samples\": [\"样本①纸面投资组合：演示评估域(paper-performance)+痛点台账+策略竞赛——痛点 P-2 从'策略跑输'经诊断、人工裁决、修数据、重赛到策略被证据替换的完整弧线。\", \"样本②本站自身：演示真值溯源(每项声称有来源+sha256)与迭代记忆(本页渲染自己的 iterations.jsonl)。\", \"样本③七段管线体检：演示漂移检测(41 个管线脚本快照)与过程健康评估域(process-health)。\"], \"directions\": [\"策略池常态化：冠军+变异压力测试、样本外验证（当前为单窗口原型）。\", \"跨项目经验迁移：痛点台账与评估域在多 Project 间复用、registry 全局汇总。\", \"真实世界信号：站点发布后以 GitHub Issues 反馈为真值输入。\"], \"potential\": \"突破性可能（诚实版）：如果\\\"用系统演化系统\\\"闭环成立，软件维护会从\\\"人写规则\\\" 变为\\\"系统积累证据、人工审批边界、机器执行纪律\\\"——经验可跨域迁移、失败自动聚合、 长期目标有人持续负责。当前状态：原型，机制已跑通一圈，但尚未在真实生产压力下验证。 本段为愿景陈述，非能力声称。\\n\"}",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "4c589e9e0f325f84120aa4ff6d5c3b45f0bbe23a6f9d065a4c4356c670f88792"
+      "sha256": "ffb5df67aa87ae90ed4d61297804af4ad6e4427513fbee636476d7dd129b0faf"
     },
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=13 open=7 resolved=6 evidence_gaps=0",
+      "text": "projects=2 pains=21 open=13 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "f4be5f3dafa881cd94c5419381d4bd202c77f61811a2a2e0adfb1de5164f9dc4"
+      "sha256": "5a7dabf6efa587e6c42dcc621e8d4522390bea258519caee707fa986a67ae96d"
     },
     {
       "id": "feedback-truth",
       "label": "真实世界反馈真值",
-      "text": "issues=0 status=available v0.5.0_downloads=2 clones=count=55/uniques=25 delta=open_issues+0, v050_downloads+0",
+      "text": "issues=1 status=available v0.5.0_downloads=2 clones=count=55/uniques=25 delta=forks+0, open_issues+0, stars+0, v050_downloads+0, watchers+0",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\truth\\feedback.json",
-      "sha256": "e38e53d36a70bf47cd6e91f77a41dd78025f9c591373027d7def76c5e5531e8e"
+      "sha256": "3e193283d2b4a475dab69454b8f29096d14f7ba6d17278a7c3231192b882a3f1"
     },
     {
       "id": "demo-data",
@@ -89,7 +89,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "a0b80e7e0a906e8cc08957fc3a7e9f5cd97d217c710fdbcc127477931569efaf",
-    "truth.json": "db430d923cfa92c225edcf14a4f329ce31fa420b32d6f749d97d3f58fd34cb33"
+    "index.html": "77358723eb24c2e0fefddcd4d6fbc6a0d93f4705a0e2584d8aad4428a7f91764",
+    "truth.json": "2e6a32d22c055e7ba46a2076110a2b90e9f83b6385fbcd937e0fc795cbce6c55"
   }
 }
