@@ -189,33 +189,21 @@ def render(data):
     demo = data.get("demo")
     if demo:
         steps = [
-            ("观察", "“{need}” 被注册为一个持续责任对象——每周自动体检、留痕（演示回显你的输入）。"),
-            ("提议", "预置流程：策略池竞赛冠军 %s（%s），训练段超额 %+.4f。" % (
+            ("观察", "目标被注册为持续责任对象，每周自动体检、留痕。"),
+            ("提议", "策略池竞赛冠军 %s（%s），训练段超额 %+.4f。" % (
                 esc(demo["winner"]), esc(demo["winner_name"]), demo["winner_excess"])),
             ("门禁", "25/25 周期确定性门禁 accept；章程约束逐周期钳制，规则层对越界一律 reject。"),
             ("回填", "假设 confirmed（超额 %+.4f）；痛点台账按证据 progress——合成数据演练，无投资含义。" % (
                 demo["winner_excess"])),
         ]
-        steps_js = json.dumps(steps, ensure_ascii=False)
+        steps_html = "".join(
+            '<div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;'
+            'padding:10px;margin:6px 0;"><b>%s</b> %s</div>' % (esc(s[0]), esc(s[1]))
+            for s in steps)
         demo_html = (
-            '<input id="demoInput" placeholder="输入一句你想长期维护的事，例如：帮我盯住一组重要链接" '
-            'style="width:100%%;background:var(--panel);border:1px solid var(--line);border-radius:8px;'
-            'padding:10px;color:var(--ink);margin-bottom:10px;">'
-            '<button onclick="startDemo()" style="background:var(--acc);color:#0f1419;border:none;'
-            'border-radius:8px;padding:8px 18px;cursor:pointer;">开始体验 →</button>'
-            '<div id="demoStep" style="min-height:70px;margin-top:12px;opacity:1;transition:opacity .3s;'
-            'background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;">'
-            '输入你的目标，点"开始体验"，看一次观察→提议→门禁→回填。</div>'
-            '<p class="note">演示为预置流程 + 你的输入回显（纯前端，无后端）；演示数据来自 %s（真实策略池审计记录）。'
-            '真实系统请本地部署（见 README）。</p>'
-            '<script>var demoSteps=%s;var timer=null;'
-            'function startDemo(){var need=document.getElementById("demoInput").value||"我的长期目标";'
-            'var i=0;function show(){var el=document.getElementById("demoStep");el.style.opacity=0;'
-            'setTimeout(function(){el.innerHTML="<b>"+demoSteps[i][0]+"</b> "+demoSteps[i][1].replace("{need}",need);'
-            'el.style.opacity=1;},300);i=(i+1)%%4;}'
-            'if(timer){clearInterval(timer);}show();timer=setInterval(function(){if(i===0){clearInterval(timer);return;}'
-            'show();},2600);}</script>'
-            % (esc(demo["source"]), steps_js))
+            '<p class="note">静态过程示意（不可操作）——真实入口是上面 3 行命令或 agent-os talk。'
+            '数据来自 %s（真实策略池审计记录）。</p>%s'
+            % (esc(demo["source"]), steps_html))
     else:
         demo_html = '<p class="note">演示数据未生成（策略池尚未运行）。</p>'
     participation_html = (
@@ -300,13 +288,13 @@ a { color:var(--acc); }
 <div class="card"><b>%d</b><span>项目案例（持续责任对象）</span></div>
 </div>
 
-<h2>给开发者：3 行跑通</h2>
+<h2>给开发者：3 行跑通（或直接说人话）</h2>
 <pre style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink);">pip install -e .
 agent-os demo
-# 把 charter 里的 mission 换成你的长期目标，再 agent-os run</pre>
-<p class="note">真实入口=上面 3 行。下面的动画是预置回放（输入回显），仅供了解机制，不是真实运行。</p>
+agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charter，门禁审过你再跑</pre>
+<p class="note">真实入口=上面 3 行。下面是静态过程示意（不可操作），仅供了解机制，不是交互。</p>
 
-<h2>机制演示动画（预置回放）</h2>
+<h2>机制过程示意（静态）</h2>
 %s
 
 <h2>我要参与</h2>

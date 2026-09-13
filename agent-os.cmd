@@ -12,6 +12,11 @@ goto dispatch
 "%PY%" "%SCR%/cmd_demo.py"
 exit /b %ERRORLEVEL%
 
+:talk
+"%PY%" "%SCR%/cmd_talk.py" %*
+exit /b %ERRORLEVEL%
+
+if /i "%~1"=="talk"      goto talk
 if /i "%~1"=="demo"      goto demo
 if /i "%~1"=="init"      goto init
 if /i "%~1"=="quickcard" goto quickcard
