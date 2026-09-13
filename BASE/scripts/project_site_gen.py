@@ -185,6 +185,7 @@ def render(data):
     dir_html = "".join("<li>%s</li>" % esc(x) for x in c.get("directions", []))
     pot_txt = esc((c.get("potential") or "").strip())
     hero_scenario = esc((c.get("hero_scenario") or "").strip())
+    hero_human = esc((c.get("hero_human") or "").strip())
     demo = data.get("demo")
     if demo:
         steps = [
@@ -291,6 +292,7 @@ a { color:var(--acc); }
 <p style="font-size:17px;color:var(--ink);">把长期目标变成<strong>被持续照顾、可审计、会自我演化</strong>的责任体——而不是一次性生成内容。</p>
 <p>自托管 · 自审查 · 自演化的智能体底座。谁需要它：想用 AI 长期维护一件事（投资研究 / 网站 / 文档库），并且要求它记教训、讲证据、不越界的人。</p>
 <p>%s</p>
+<p style="color:var(--acc);">%s</p>
 <div class="cards">
 <div class="card"><b>%s</b><span>站点快照生成于该提交（git describe；仓库 HEAD 可能更新）</span></div>
 <div class="card"><b>%d</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
@@ -298,7 +300,13 @@ a { color:var(--acc); }
 <div class="card"><b>%d</b><span>项目案例（持续责任对象）</span></div>
 </div>
 
-<h2>30 秒零成本体验</h2>
+<h2>给开发者：3 行跑通</h2>
+<pre style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink);">pip install -e .
+agent-os demo
+# 把 charter 里的 mission 换成你的长期目标，再 agent-os run</pre>
+<p class="note">真实入口=上面 3 行。下面的动画是预置回放（输入回显），仅供了解机制，不是真实运行。</p>
+
+<h2>机制演示动画（预置回放）</h2>
 %s
 
 <h2>我要参与</h2>
@@ -371,7 +379,7 @@ a { color:var(--acc); }
 <p>免责声明：研究工具定位，不构成投资建议。本站内容如实呈现底座状态，不夸大任何能力。</p>
 </div>
 </div></body></html>
-""" % (hero_scenario, ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
+""" % (hero_scenario, hero_human, ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
        demo_html, participation_html,
        intent_txt, what_html, how_html,
        script_list, ledger_rows, pain_html, feedback_html, case_rows, samples_html, fallback_note,

@@ -8,6 +8,11 @@ set "PY=python"
 goto dispatch
 
 :dispatch
+:demo
+"%PY%" "%SCR%/cmd_demo.py"
+exit /b %ERRORLEVEL%
+
+if /i "%~1"=="demo"      goto demo
 if /i "%~1"=="init"      goto init
 if /i "%~1"=="quickcard" goto quickcard
 if /i "%~1"=="sync"      goto sync
@@ -89,7 +94,7 @@ echo [agent-os] "%~1" 未实现（后续 STEP）。已实现：init/quickcard/sy
 goto end
 
 :help
-echo agent-os v0.4 原型命令:
+echo agent-os v0.5.1 命令（推荐 pip install -e . 后使用 agent-os）:
 echo   agent-os init          冷启动初始化（目录/配置/密钥审计/自测）
 echo   agent-os quickcard     打印或生成 REQ 快速卡模板
 echo   agent-os new           交互式澄清需求，生成 tasks^<id^>/REQ.md 并登记 registry

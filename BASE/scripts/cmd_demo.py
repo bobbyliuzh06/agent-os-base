@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""cmd_demo.py —— agent-os demo：十分钟黄金路径（零配置最小演化）。
+"""cmd_demo.py —— agent-os demo：十分钟黄金路径（零 LLM/零网络；依赖 PyYAML）。
 
 选定位后的第一个产品动作：让陌生开发者在 10 分钟内从"听说"到"第一次跑通"。
 本命令只做四步（全部真实、可溯源，无 LLM 调用、无网络、无 DeepSeek key）：
@@ -21,7 +21,7 @@ TEMPLATE = """\
 # -*- coding: utf-8 -*-
 id: demo-{ts}
 name: 我的第一个持续责任对象（demo）
-mission: 十分钟路径演示：观察→提议→门禁→记录（无 LLM/无网络/零配置）
+mission: 十分钟路径演示：观察→提议→门禁→记录（无 LLM/无网络；依赖 PyYAML）
 constraints:
   - 只写本任务目录；不写 BASE
 approval_points:

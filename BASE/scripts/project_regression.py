@@ -103,6 +103,28 @@ def main():
     except Exception as e:
         results.append({"id": "I-9", "name": "version-metadata-consistent", "pass": False, "detail": str(e)[:60]})
 
+    # I-11 全仓版本串一致（第八轮缺陷1：版本号四处不一致——root README/.cmd/.bat 未被 I-9 覆盖）
+    ver_file = (ROOT / "BASE" / "META" / "VERSION").read_text(encoding="utf-8").strip()
+    mismatches = []
+    targets = [("README.md", ROOT / "README.md", "utf-8"),
+               ("BASE/README.md", ROOT / "BASE" / "README.md", "utf-8"),
+               ("agent-os.cmd", ROOT / "agent-os.cmd", "utf-8"),
+               ("init.bat", ROOT / "init.bat", "gbk"),
+               ("cli.py", ROOT / "agent_os_cli" / "cli.py", "utf-8")]
+    for name, path, enc in targets:
+        if not path.exists():
+            mismatches.append("%s missing" % name)
+            continue
+        try:
+            txt = path.read_bytes().decode(enc)
+        except Exception:
+            mismatches.append("%s decode-fail" % name)
+            continue
+        if ("v" + ver_file) not in txt:
+            mismatches.append("%s lacks v%s" % (name, ver_file))
+    results.append({"id": "I-11", "name": "version-strings-consistent",
+                    "pass": not mismatches, "detail": "; ".join(mismatches) or "all contain v%s" % ver_file})
+
     # I-10 蒸馏检视连续性（第五轮反馈挑刺一：每轮 reflow 必须回答"本轮是否有新轨迹可蒸馏"）
     govs = sorted((ROOT / "BASE" / "governance").glob("PROPOSAL-BASE-reflow-*.md"),
                   key=lambda p: p.stat().st_mtime)

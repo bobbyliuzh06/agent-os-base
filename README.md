@@ -8,7 +8,7 @@
 - 📖 快速上手与机制总览：[BASE/README.md](BASE/README.md)
 - 🌐 公开展示站（真值驱动、每 4 小时自动刷新）：https://bobbyliuzh06.github.io/agent-os-base/
 - 💬 反馈与提案：https://github.com/bobbyliuzh06/agent-os-base/issues
-- 🏷️ 当前版本：v0.5.0（14 阶段自演化管线；供应链台账见 BASE/regression-runs/）
+- 🏷️ 当前版本：v0.5.1（14 阶段自演化管线；供应链台账见 BASE/regression-runs/）
 
 > 三条铁律：记忆先于智能 · 真值先于自动化 · 人机分界按风险。
 > 免责声明：研究工具定位，不构成投资建议。

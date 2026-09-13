@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-rem agent-os v0.4 冷启动初始化（只读检查 + 按需创建目录/模板，不改现有配置）
+rem agent-os v0.5.1 冷启动初始化（只读检查 + 按需创建目录/模板，不改现有配置）
 if not defined AGENT_OS_ROOT (
   set "AGENT_OS_ROOT=%~dp0"
 )
