@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T06:28:02Z",
+  "generated_at": "2026-09-13T06:42:14Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.0-4-g931719e",
+      "text": "v0.5.0-7-g71c41f8",
       "source": ".git/refs/tags",
       "sha256": "2a07379b0386ed0959163cf9d90857c7f2cd7a96ebd776fa57589036b0910d8a"
     },
@@ -21,7 +21,7 @@
       "label": "回归台账",
       "text": "[{\"file\": \"MANIFEST-v0.4.3-cleanbase.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.4-audit.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"MANIFEST-v0.4.6.json\", \"schema\": null, \"status\": null, \"enabled\": \"enabled_from_v0.4.6\"}, {\"file\": \"nightly-20260912.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"nightly-20260913.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3-rev3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.3.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"POSTURE-v0.4.5-rev2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"PREFLIGHT-v0.4.2.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-pain-verification.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"project-regression.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.5.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.4.6-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}, {\"file\": \"SUPPLYCHAIN-v0.4.6-rev1.json\", \"schema\": null, \"status\": null, \"enabled\": null}, {\"file\": \"SUPPLYCHAIN-v0.5.0-provenance.json\", \"schema\": \"1.1\", \"status\": \"final\", \"enabled\": true}]",
       "source": "BASE/regression-runs",
-      "sha256": "c4e04b82a75f0c49ad12357aba5992524cf5d6ca64769ea01adc99414700425e"
+      "sha256": "3e1a0f200c006ae42ceb7564740c11e5591c0e30626069ff208a02e22c0c0fbf"
     },
     {
       "id": "project-cases",
@@ -61,16 +61,16 @@
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=1 pains=10 open=4 resolved=6 evidence_gaps=0",
+      "text": "projects=2 pains=12 open=6 resolved=6 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "15dc746981099ac9d86579bf2a6af0320fed01067f1555b23019cc1d4c7aeba0"
+      "sha256": "3b7fb175a5d6cffaf6bd1c2eb66629f5bde5bd60b410f64026d1fa7fec56e984"
     },
     {
       "id": "feedback-truth",
       "label": "真实世界反馈真值",
       "text": "issues=0 status=available v0.5.0_downloads=2",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\truth\\feedback.json",
-      "sha256": "464d98c82cf3c0bc6d1940cbb1d9c98c853be81ac5aa2dc38ab779cc503362cd"
+      "sha256": "e38e53d36a70bf47cd6e91f77a41dd78025f9c591373027d7def76c5e5531e8e"
     }
   ],
   "gate": {
@@ -82,7 +82,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "108cb58c01fa4a26f83ea60db76351d3015afbda81b9aa5f1eec0aa199adbc78",
-    "truth.json": "ec95ca9d7fc8eec1bfa9865e552b1c037c07681d814a0479b4974eb097ee346d"
+    "index.html": "9666d6c80c2d459d63471bcc505354d86bb8eded5f466185ede088c8494b2032",
+    "truth.json": "2ba90bb17f44629c0993a865a7e2bc0e81741cf8453c0dbb3b6306df0c40c586"
   }
 }
