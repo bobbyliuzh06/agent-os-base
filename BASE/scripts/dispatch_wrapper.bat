@@ -48,6 +48,15 @@ echo [%NOW%] [5/7] observe: observe_report.py >> "%LOG%"
 set "RC5=%ERRORLEVEL%"
 echo [%NOW%] [5/7] observe rc=%RC5% >> "%LOG%"
 
+echo [%NOW%] [5a/7] project-selfcheck: project_selfcheck.py >> "%LOG%"
+"%PYTHON_EXE%" "%SCRIPTS%/project_selfcheck.py" >> "%LOG%" 2>&1
+set "RC5A=%ERRORLEVEL%"
+echo [%NOW%] [5a/7] project-selfcheck rc=%RC5A% >> "%LOG%"
+
+echo [%NOW%] [5b/7] project-site-gen: project_site_gen.py >> "%LOG%"
+"%PYTHON_EXE%" "%SCRIPTS%/project_site_gen.py" >> "%LOG%" 2>&1
+set "RC5B=%ERRORLEVEL%"
+echo [%NOW%] [5b/7] project-site-gen rc=%RC5B% >> "%LOG%"
 echo [%NOW%] [6a/7] project-pain-verify: project_verify_pains.py >> "%LOG%"
 "%PYTHON_EXE%" "%SCRIPTS%/project_verify_pains.py" >> "%LOG%" 2>&1
 set "RC6A=%ERRORLEVEL%"
@@ -78,15 +87,6 @@ echo [%NOW%] [6f/7] project-site-publish: project_site_publish.py >> "%LOG%"
 set "RC6F=%ERRORLEVEL%"
 echo [%NOW%] [6f/7] project-site-publish rc=%RC6F% >> "%LOG%"
 
-echo [%NOW%] [5a/7] project-selfcheck: project_selfcheck.py >> "%LOG%"
-"%PYTHON_EXE%" "%SCRIPTS%/project_selfcheck.py" >> "%LOG%" 2>&1
-set "RC5A=%ERRORLEVEL%"
-echo [%NOW%] [5a/7] project-selfcheck rc=%RC5A% >> "%LOG%"
-
-echo [%NOW%] [5b/7] project-site-gen: project_site_gen.py >> "%LOG%"
-"%PYTHON_EXE%" "%SCRIPTS%/project_site_gen.py" >> "%LOG%" 2>&1
-set "RC5B=%ERRORLEVEL%"
-echo [%NOW%] [5b/7] project-site-gen rc=%RC5B% >> "%LOG%"
 
 echo [%NOW%] [6/7] advice: merge_advisor.py >> "%LOG%"
 "%PYTHON_EXE%" "%SCRIPTS%/merge_advisor.py" >> "%LOG%" 2>&1
