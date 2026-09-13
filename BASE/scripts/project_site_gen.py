@@ -115,9 +115,24 @@ def gather():
     else:
         pain_rows = None
         claim("pain-rollup", "全局痛点汇总", "未生成（pain_rollup 尚未运行）", "N/A")
+    # 8) 真实世界反馈真值（来源：P2 truth/feedback.json，由 6e 阶段轮询 GitHub API 生成）
+    fp = EVO / "truth" / "feedback.json"
+    if fp.exists():
+        fb = json.loads(fp.read_text(encoding="utf-8"))
+        fb_rel = fb.get("releases") or []
+        fb_v050 = next((r["downloads"] for r in fb_rel if r.get("tag") == "v0.5.0"), None)
+        feedback = {"polled_at": fb.get("polled_at"), "open_issues": fb.get("open_issues"),
+                    "status": fb.get("feedback_status"), "v050_downloads": fb_v050,
+                    "releases": fb_rel}
+        claim("feedback-truth", "真实世界反馈真值",
+              "issues=%s status=%s v0.5.0_downloads=%s" % (fb.get("open_issues"), fb.get("feedback_status"), fb_v050),
+              str(fp.relative_to(ROOT)))
+    else:
+        feedback = None
+        claim("feedback-truth", "真实世界反馈真值", "未采集（feedback_truth 尚未运行）", "N/A")
     return {"version": version, "scripts": scripts, "ledgers": ledgers, "cases": cases,
             "charter": charter, "fallback": fallback, "normal_total": normal,
-            "pain_rows": pain_rows}
+            "pain_rows": pain_rows, "feedback": feedback}
 
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
@@ -153,6 +168,16 @@ def render(data):
                      % "".join('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
                          esc(r["pain"]), esc(r["project"]), esc(r["status"]), esc(r["score"]), esc(r["symptom"]))
                          for r in data["pain_rows"]))
+    fb = data.get("feedback")
+    if fb is None:
+        feedback_html = '<p class="note">真实反馈真值未采集（feedback_truth 尚未运行）。</p>'
+    else:
+        rel_rows = "".join('<tr><td>%s</td><td>%s</td></tr>' % (esc(r.get("tag")), esc(r.get("downloads")))
+                           for r in (fb.get("releases") or []))
+        feedback_html = ('<p>采集时间 %s（GitHub API 只读轮询，%s）。Issues 数：%s。</p>'
+                         '<table><tr><th>Release</th><th>下载数</th></tr>%s</table>'
+                         '<p class="note">访问量（Pages 流量）尚无法经此 API 获取，未展示即未编造（P-8 待办）。</p>'
+                         % (esc(fb.get("polled_at")), esc(fb.get("status") or "?"), esc(fb.get("open_issues")), rel_rows))
     it_log = MEM / "iterations.jsonl"
     prev = [json.loads(l) for l in it_log.read_text(encoding="utf-8").splitlines()] if it_log.exists() else []
     it_rows = "".join(
@@ -230,6 +255,9 @@ a { color:var(--acc); }
 <p>痛点台账的跨项目汇总（pain_rollup，调度 6c 阶段生成）：底座当前在治什么、治好了什么，一表可见。</p>
 %s
 
+<h2>真实反馈（世界在怎么回应）</h2>
+%s
+
 <h2>案例样本（机制演示，不是主角）</h2>
 <p>案例是让机制可被理解的样本：每个案例标注它演示了底座的哪一部分。</p>
 <table>
@@ -269,7 +297,7 @@ a { color:var(--acc); }
 </div></body></html>
 """ % (ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
        intent_txt, what_html, how_html,
-       script_list, ledger_rows, pain_html, case_rows, samples_html, fallback_note,
+       script_list, ledger_rows, pain_html, feedback_html, case_rows, samples_html, fallback_note,
        lim_html, esc(fallback_note), it_rows, road_html, dir_html, pot_txt,
        c["feedback"]["channel"], now)
 

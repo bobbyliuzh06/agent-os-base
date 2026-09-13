@@ -32,8 +32,8 @@ a { color:var(--acc); }
 <h1>agent-os</h1>
 <p>自托管 · 自审查 · 自演化的智能体底座 —— 一个把自己当作"持续责任"来管理的项目。</p>
 <div class="cards">
-<div class="card"><b>v0.5.0-1-g52b8e16</b><span>仓库版本（git describe，真实输出）</span></div>
-<div class="card"><b>48</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
+<div class="card"><b>v0.5.0-2-g29aa2a2</b><span>仓库版本（git describe，真实输出）</span></div>
+<div class="card"><b>49</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
 <div class="card"><b>19</b><span>回归台账（真实字段）</span></div>
 <div class="card"><b>2</b><span>项目案例（持续责任对象）</span></div>
 </div>
@@ -51,7 +51,7 @@ a { color:var(--acc); }
 <h2>演化闭环</h2>
 <div class="flow"><span>propose</span><span>gate</span><span>execute</span><span>postprocess</span><span>observe</span><span>advice</span><span>dashboard</span></div>
 <p>任何对 BASE 规则的修改都必须经过提案 + 门禁 + 人审：先证明，再落盘。当前管线脚本清单（真实文件名）：</p>
-<p class="note">cleanup_dispatch.py、cli_common.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat</p>
+<p class="note">cleanup_dispatch.py、cli_common.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat</p>
 
 <h2>当前真实状态</h2>
 <p>本表来自仓库真实文件，每项声称的来源与 sha256 记录在 <a href="truth.json">truth.json</a>。</p>
@@ -63,7 +63,10 @@ a { color:var(--acc); }
 
 <h2>全局痛点（跨项目）</h2>
 <p>痛点台账的跨项目汇总（pain_rollup，调度 6c 阶段生成）：底座当前在治什么、治好了什么，一表可见。</p>
-<table><tr><th>痛点</th><th>项目</th><th>状态</th><th>分值</th><th>症状</th></tr><tr><td>P-2</td><td>project-layer-p1-20260912</td><td>open</td><td>6</td><td>组合跑输基准（v1 数据）</td></tr><tr><td>P-3</td><td>project-layer-p1-20260912</td><td>resolved</td><td>3</td><td>P1 记忆文件残留旧版运行记录导致站点真值污染</td></tr><tr><td>P-4</td><td>project-layer-p1-20260912</td><td>resolved</td><td>3</td><td>演化机制缺评估与回写，可能随机无序，未围绕真实痛点</td></tr><tr><td>P-1</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>LLM 提议器 JSON 截断，规范运行 live 0/3</td></tr><tr><td>P-5</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>P-2 弧线独立复核 verdict=concern</td></tr><tr><td>P-6</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>复核 concern：遗留行索引不唯一</td></tr><tr><td>P-7</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>复核 concern：P-5 回应证据自引用</td></tr></table>
+<table><tr><th>痛点</th><th>项目</th><th>状态</th><th>分值</th><th>症状</th></tr><tr><td>P-2</td><td>project-layer-p1-20260912</td><td>open</td><td>6</td><td>组合跑输基准（v1 数据）</td></tr><tr><td>P-3</td><td>project-layer-p1-20260912</td><td>resolved</td><td>3</td><td>P1 记忆文件残留旧版运行记录导致站点真值污染</td></tr><tr><td>P-4</td><td>project-layer-p1-20260912</td><td>resolved</td><td>3</td><td>演化机制缺评估与回写，可能随机无序，未围绕真实痛点</td></tr><tr><td>P-1</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>LLM 提议器 JSON 截断，规范运行 live 0/3</td></tr><tr><td>P-5</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>P-2 弧线独立复核 verdict=concern</td></tr><tr><td>P-6</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>复核 concern：遗留行索引不唯一</td></tr><tr><td>P-7</td><td>project-layer-p1-20260912</td><td>resolved</td><td>2</td><td>复核 concern：P-5 回应证据自引用</td></tr><tr><td>P-8</td><td>project-layer-p1-20260912</td><td>open</td><td>2</td><td>站点已发布（https://bobbyliuzh06.github.io/agent-os-base/），访问量/Issues 反馈真值尚未接入</td></tr><tr><td>P-9</td><td>project-layer-p1-20260912</td><td>open</td><td>2</td><td>独立复核 concern/disagree: 证据仅含 site_url 与 release，未直接记录 Issues/流量统计缺失的观测或待办来源，根因属合理</td></tr></table>
+
+<h2>真实反馈（世界在怎么回应）</h2>
+<p>采集时间 2026-09-13T05:11:52Z（GitHub API 只读轮询，available）。Issues 数：0。</p><table><tr><th>Release</th><th>下载数</th></tr><tr><td>v0.5.0</td><td>2</td></tr><tr><td>v0.4.6</td><td>3</td></tr><tr><td>v0.4.5</td><td>0</td></tr><tr><td>v0.4.4-audit</td><td>1</td></tr><tr><td>v0.4.3-cleanbase</td><td>2</td></tr></table><p class="note">访问量（Pages 流量）尚无法经此 API 获取，未展示即未编造（P-8 待办）。</p>
 
 <h2>案例样本（机制演示，不是主角）</h2>
 <p>案例是让机制可被理解的样本：每个案例标注它演示了底座的哪一部分。</p>
@@ -82,7 +85,7 @@ a { color:var(--acc); }
 <p>本页渲染自己的迭代记忆（memory/iterations.jsonl）：每次再生成都是真实记录，"交付后持续维护"不是口号。</p>
 <table>
 <tr><th>迭代</th><th>时间(UTC)</th><th>门禁</th><th>声称数</th><th>生成脚本sha</th></tr>
-<tr><td>#1</td><td>2026-09-13T02:56:37Z</td><td>accept</td><td>6</td><td>b1ff680b4e46</td></tr><tr><td>#2</td><td>2026-09-13T02:57:32Z</td><td>accept</td><td>7</td><td>2e3ac9b986e7</td></tr><tr><td>#3</td><td>2026-09-13T02:58:37Z</td><td>accept</td><td>7</td><td>829350df26dd</td></tr><tr><td>#4</td><td>2026-09-13T02:59:13Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#5</td><td>2026-09-13T03:20:51Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#6</td><td>2026-09-13T03:38:57Z</td><td>accept</td><td>7</td><td>5363057b29d9</td></tr><tr><td>#7</td><td>2026-09-13T03:44:06Z</td><td>accept</td><td>8</td><td>6fa3985465cd</td></tr><tr><td>#8</td><td>2026-09-13T03:52:51Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#9</td><td>2026-09-13T03:53:49Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#10</td><td>2026-09-13T04:01:06Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#11</td><td>2026-09-13T04:03:56Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#12</td><td>2026-09-13T04:05:10Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#13</td><td>2026-09-13T04:08:10Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#14</td><td>2026-09-13T04:09:03Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#15</td><td>2026-09-13T04:11:27Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#16</td><td>2026-09-13T04:13:59Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#17</td><td>2026-09-13T04:19:49Z</td><td colspan="3">本次（正在生成）</td></tr>
+<tr><td>#1</td><td>2026-09-13T02:56:37Z</td><td>accept</td><td>6</td><td>b1ff680b4e46</td></tr><tr><td>#2</td><td>2026-09-13T02:57:32Z</td><td>accept</td><td>7</td><td>2e3ac9b986e7</td></tr><tr><td>#3</td><td>2026-09-13T02:58:37Z</td><td>accept</td><td>7</td><td>829350df26dd</td></tr><tr><td>#4</td><td>2026-09-13T02:59:13Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#5</td><td>2026-09-13T03:20:51Z</td><td>accept</td><td>7</td><td>92f5d26a75b1</td></tr><tr><td>#6</td><td>2026-09-13T03:38:57Z</td><td>accept</td><td>7</td><td>5363057b29d9</td></tr><tr><td>#7</td><td>2026-09-13T03:44:06Z</td><td>accept</td><td>8</td><td>6fa3985465cd</td></tr><tr><td>#8</td><td>2026-09-13T03:52:51Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#9</td><td>2026-09-13T03:53:49Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#10</td><td>2026-09-13T04:01:06Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#11</td><td>2026-09-13T04:03:56Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#12</td><td>2026-09-13T04:05:10Z</td><td>accept</td><td>8</td><td>66b6f953f15d</td></tr><tr><td>#13</td><td>2026-09-13T04:08:10Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#14</td><td>2026-09-13T04:09:03Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#15</td><td>2026-09-13T04:11:27Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#16</td><td>2026-09-13T04:13:59Z</td><td>accept</td><td>9</td><td>df8b9d7b75f8</td></tr><tr><td>#17</td><td>2026-09-13T04:19:49Z</td><td>accept</td><td>9</td><td>ee0d954827c8</td></tr><tr><td>#18</td><td>2026-09-13T05:12:38Z</td><td>accept</td><td>10</td><td>cf1930ba8df5</td></tr><tr><td>#19</td><td>2026-09-13T05:29:24Z</td><td colspan="3">本次（正在生成）</td></tr>
 </table>
 
 <h2>路线图与潜在方向</h2>
@@ -98,7 +101,7 @@ a { color:var(--acc); }
 <p class="note">发布状态：本站已随 v0.5.0 上线 GitHub Pages；访问/反馈指标接入为 P-8 待办，接入前本声明继续生效。</p>
 
 <div class="foot">
-<p>本页面由 <code>project_site_gen.py</code> 于 2026-09-13T04:19:49Z 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>
+<p>本页面由 <code>project_site_gen.py</code> 于 2026-09-13T05:29:24Z 从仓库真实状态生成；页面数字均可追溯至 truth.json 中的来源文件 + sha256。</p>
 <p>免责声明：研究工具定位，不构成投资建议。本站内容如实呈现底座状态，不夸大任何能力。</p>
 </div>
 </div></body></html>

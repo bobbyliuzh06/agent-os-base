@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-13T04:19:49Z",
+  "generated_at": "2026-09-13T05:29:24Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.0-1-g52b8e16",
+      "text": "v0.5.0-2-g29aa2a2",
       "source": ".git/refs/tags",
       "sha256": "2a07379b0386ed0959163cf9d90857c7f2cd7a96ebd776fa57589036b0910d8a"
     },
     {
       "id": "pipeline-scripts",
       "label": "七段管线脚本清单",
-      "text": "48 个脚本：cleanup_dispatch.py、cli_common.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat",
+      "text": "49 个脚本：cleanup_dispatch.py、cli_common.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat",
       "source": "BASE/scripts",
-      "sha256": "d443f622cb323a6b8580bc017f01aad97a45b14d173162f19223f5eb8062a0dc"
+      "sha256": "aa198414b3f6d522c4399e052ae666bcceabde9a0d13e4e9d6093d1b13329ea1"
     },
     {
       "id": "regression-ledgers",
@@ -61,9 +61,16 @@
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=1 pains=7 open=1 resolved=6 evidence_gaps=0",
+      "text": "projects=1 pains=9 open=3 resolved=6 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "ed59b6a10b4706dd0e79b84e64a8d8969afbae4b6e3927332151cac352b602ff"
+      "sha256": "f6488d028378f3dc5833f8f3c9557bd563b8449072c7d2fc90ca3e8d1374fedd"
+    },
+    {
+      "id": "feedback-truth",
+      "label": "真实世界反馈真值",
+      "text": "issues=0 status=available v0.5.0_downloads=2",
+      "source": "tasks\\project-layer-p2-20260912\\task-evolve\\truth\\feedback.json",
+      "sha256": "464d98c82cf3c0bc6d1940cbb1d9c98c853be81ac5aa2dc38ab779cc503362cd"
     }
   ],
   "gate": {
@@ -75,7 +82,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "1dd2dd44bba936771b819549117ddd1c1176ad17c0a3fdcc0e4c5738ddd40948",
-    "truth.json": "6c0ed548bc145be62fec7c2f0dd77027d7f37c2bff53d3e781cf7f782c5a23db"
+    "index.html": "1341743270e94216bd2a6b41cefeeec7f3b12f7a2b22d572244681f57c4f5d2c",
+    "truth.json": "1fc3045b4ea1f164063c5af036c559f49fc6ab73fa9cefe68baa12859c3e3d4f"
   }
 }
