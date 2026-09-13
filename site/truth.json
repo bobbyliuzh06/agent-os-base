@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-13T11:45:18Z",
+  "generated_at": "2026-09-13T12:03:03Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1-7-gf633b37",
+      "text": "v0.5.1-9-gf226a41",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
     {
       "id": "pipeline-scripts",
       "label": "七段管线脚本清单",
-      "text": "52 个脚本：cleanup_dispatch.py、cli_common.py、cmd_demo.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_talk.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_site_publish.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、task_engine.py、task_lock.py、watch_check.bat",
+      "text": "53 个脚本：cleanup_dispatch.py、cli_common.py、cmd_demo.py、cmd_doctor.py、cmd_evolve.py、cmd_init.py、cmd_new.py、cmd_publish.py、cmd_quickcard.py、cmd_run.py、cmd_sync.py、cmd_talk.py、cmd_watch.py、code_sandbox_run.py、code_sandbox_scan.py、config_loader.py、dashboard.py、dispatch_wrapper.bat、evolve_dispatch.py、gate_review_adapter.py、gate_review_dispatch.py、generate_usage_doc.py、health_check.py、merge_advisor.py、merge_apply.py、nightly_check.bat、observe_report.py、postprocess_dispatch.py、posture_check.py、project_dual_review.py、project_feedback_truth.py、project_pain_rollup.py、project_regression.py、project_selfcheck.py、project_site_gen.py、project_site_publish.py、project_strategy_pool.py、project_verify_pains.py、proposer.py、readiness_eval.py、redact.py、release_add_tasks_submodule.py、release_split_base.py、sandbox_sitecustomize.py、scan_hardcoded.py、supplychain_check.py、sync_manager.py、tag_audit.bat、tag_audit.py、talk_run_cycle.py、task_engine.py、task_lock.py、watch_check.bat",
       "source": "BASE/scripts",
-      "sha256": "d3230ef24e9c002a7cb956c60113fd93de9d613fa45d0375e7de7073651e2b76"
+      "sha256": "2ef1c639f91a4ee6ace4c545cef1765d67452251bac269a36c1c56541267d110"
     },
     {
       "id": "regression-ledgers",
@@ -40,30 +40,30 @@
     {
       "id": "limitations",
       "label": "真实局限",
-      "text": "- 组合案例（P0/P1）使用合成数据演练，无真实市场含义；其价值在决策链纪律而非收益。\n- task_layer.enabled=false：任务层当前关闭（明确为下一里程碑候选，见 roadmap），任务以人工/会话方式推进，不声称自驱常驻。\n- 发布通道已开启（v0.5.0）：本站随发布上线 GitHub Pages；访问量/反馈指标尚未接入（P-8 待办），在接入前本声明继续生效。\n- LLM 提议器曾因长 JSON 输出截断而 0/3 回退（痛点 P-1）；已用短输出约束+重试修复，证据为 run-20260913T031934Z live 3/3。残余风险：超长复杂提议仍可能截断。\n- 回撤纪律在原型中为'记录并继续'的只读审查，尚未接真实风控动作。\n- 第九轮诚实声明：九轮自演化后机制已过剩（51 脚本/19 台账/3 次蒸馏/多 agent 实验），但真实用户=1、star=0、downloads=2——机制价值尚未被任何真实用户验证兑现。这条声明本身就是底座诚实的组成部分。",
+      "text": "- 组合案例（P0/P1）使用合成数据演练，无真实市场含义；其价值在决策链纪律而非收益。\n- task_layer.enabled=false：任务层当前关闭（明确为下一里程碑候选，见 roadmap），任务以人工/会话方式推进，不声称自驱常驻。\n- 发布通道已开启（v0.5.0）：本站随发布上线 GitHub Pages；访问量/反馈指标尚未接入（P-8 待办），在接入前本声明继续生效。\n- LLM 提议器曾因长 JSON 输出截断而 0/3 回退（痛点 P-1）；已用短输出约束+重试修复，证据为 run-20260913T031934Z live 3/3。残余风险：超长复杂提议仍可能截断。\n- 回撤纪律在原型中为'记录并继续'的只读审查，尚未接真实风控动作。\n- 第九轮诚实声明：九轮自演化后机制已过剩（51 脚本/19 台账/3 次蒸馏/多 agent 实验），但真实用户=1、star=0、downloads=2——机制价值尚未被任何真实用户验证兑现。这条声明本身就是底座诚实的组成部分。行动承诺（第十轮起）：不再新增机制层，只做三件事——真实目标端到端跑通、证据可溯源、向真实的人征集真实目标。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "7e69fdfb3e585ff72f87b72dc908d74ad7bddaf798d3e2a41852c4c086cf1de4"
+      "sha256": "79e5e4ad87cf4b2a59c623a37076afebf5cc21ec2b674b560476e9c04ee2dde2"
     },
     {
       "id": "roadmap",
       "label": "路线图",
       "text": "- P0（已完成）：纸面投资组合四周期闭环，假设可证伪、决策链完整、回撤纪律先于收益。\n- P1（已完成）：LLM 提议器接入 + 连续持仓压力演练，回撤纪律真实触发；策略池竞赛+样本外验证后冻结案例层。\n- P2（进行中）：本站——底座机制讲解窗口，已由管线接管（5b 阶段每 4 小时自动刷新）。\n- P3（已完成）：案例③ 七段管线注册为 Project；自体检/站点/验证器/复核人/回归集挂入调度（5a/5b/6a/6b/7a）。\n- 发布通道（已完成）：v0.5.0 发布，本站上线 GitHub Pages；访问/反馈真值接入为 P-8 待办。",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "7e69fdfb3e585ff72f87b72dc908d74ad7bddaf798d3e2a41852c4c086cf1de4"
+      "sha256": "79e5e4ad87cf4b2a59c623a37076afebf5cc21ec2b674b560476e9c04ee2dde2"
     },
     {
       "id": "narrative",
       "label": "机制讲解叙事(初衷/用法/案例样本/方向/愿景)",
       "text": "{\"intent\": \"架构初衷：agent-os 不追求\\\"一次性交付\\\"，而是把每个目标当作持续责任来管理—— 记忆先于智能、真值先于自动化、人机分界按风险。底座自身的演化走同一套机制： 轨迹采集 → 模式提取 → 提案 → 门控验证 → 回滚，即\\\"用系统演化系统\\\"。\\n\", \"what_is\": [\"是：一个自托管、自审查、自演化的智能体底座；Project 层把长期目标注册为持续责任对象。\", \"是：一套把失败聚合为痛点、把反馈固化为记忆、让每个提案都必须回答'治哪个痛点'的演化机制。\", \"不是：单次任务自动化工具；不是生成内容后即弃的流程；不是绕过人工的高危执行器。\"], \"how_to_use\": [\"使用者路径：把你的长期目标写成 charter（身份/约束/评估域/审批点），底座按节奏观察→提议→门禁→执行→记录→复盘。\", \"提案者路径：任何 BASE 修改先写 PROPOSAL.md，过确定性规则层，再由人工门禁裁决；四锁（auto_merge/all_probe/merge_acks/白名单）可关停自动合并。\", \"维护者路径：体验证过的经验回流 BASE（governance 归档），未经验证的经验留在任务层草稿；执行与经验隔离。\", \"评估域随场景声明：投资=绩效评估；网页按目的=访问/转化/留存/美工评审；底座自身=过程健康指标。机制不变，表象随场景。\"], \"cases_as_samples\": [\"样本①纸面投资组合：演示评估域(paper-performance)+痛点台账+策略竞赛——痛点 P-2 从'策略跑输'经诊断、人工裁决、修数据、重赛到策略被证据替换的完整弧线。\", \"样本②本站自身：演示真值溯源(每项声称有来源+sha256)与迭代记忆(本页渲染自己的 iterations.jsonl)。\", \"样本③七段管线体检：演示漂移检测(41 个管线脚本快照)与过程健康评估域(process-health)。\"], \"directions\": [\"策略池常态化：冠军+变异压力测试、样本外验证（当前为单窗口原型）。\", \"跨项目经验迁移：痛点台账与评估域在多 Project 间复用、registry 全局汇总。\", \"真实世界信号：站点发布后以 GitHub Issues 反馈为真值输入。\"], \"potential\": \"突破性可能（诚实版）：如果\\\"用系统演化系统\\\"闭环成立，软件维护会从\\\"人写规则\\\" 变为\\\"系统积累证据、人工审批边界、机器执行纪律\\\"——经验可跨域迁移、失败自动聚合、 长期目标有人持续负责。当前状态：原型，机制已跑通一圈，但尚未在真实生产压力下验证。 本段为愿景陈述，非能力声称。\\n\"}",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\charter.yaml",
-      "sha256": "7e69fdfb3e585ff72f87b72dc908d74ad7bddaf798d3e2a41852c4c086cf1de4"
+      "sha256": "79e5e4ad87cf4b2a59c623a37076afebf5cc21ec2b674b560476e9c04ee2dde2"
     },
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=21 open=13 resolved=8 evidence_gaps=0",
+      "text": "projects=2 pains=22 open=14 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "33cce77f6114cd21add4dc2908f5f8c0c46193234fa117ee67aba8cb75d722d3"
+      "sha256": "5d497c23fe92d731ce26899a3ee6d8fe4c9a569dc6753d2841d8693b75f37bed"
     },
     {
       "id": "feedback-truth",
@@ -74,10 +74,17 @@
     },
     {
       "id": "demo-data",
-      "label": "30秒体验演示数据",
+      "label": "机制示意演示数据",
       "text": "winner=S-1 excess=+0.2124 gates=25/25（真实策略池审计）",
       "source": "tasks\\project-layer-p1-20260912\\task-evolve\\audit\\pool-v2-20260913T033827Z.json",
       "sha256": "939b3d506f543c7ec108908cdbf0544c0702ec19f21575f21e61e6a9820f624f"
+    },
+    {
+      "id": "real-goal",
+      "label": "真实目标第一周期真值",
+      "text": "goal=帮我长期盯住一组重要链接 status=healthy checked=2026-09-13T20:02:00Z",
+      "source": "tasks\\talk-帮我长期盯住一组重要链接-20260913T120151Z\\task-evolve\\truth\\check-20260913T200200Z.json",
+      "sha256": "f89c136328d7d029d6ca5704ca95a24086866fdb879d59b42e75ea4582322352"
     }
   ],
   "gate": {
@@ -89,7 +96,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "5e328ec4f175f335348b734b413eb6f861952b5c3c263b20d0c1993c8ee08e4a",
-    "truth.json": "6430f42b74a9c655536ffd586895493d4662aef92d9e267ca7a870acd747268b"
+    "index.html": "f348f90962a7a83835bd9f0c6a66a813e2134579d779e13a16afd505b57b79b4",
+    "truth.json": "877360e17178daddae2d07bc8c2ac7f8ea5dd3bb593ab83dcb212a82fdec951e"
   }
 }
