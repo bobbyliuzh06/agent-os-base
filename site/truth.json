@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-09-13T15:31:32Z",
+  "generated_at": "2026-09-13T15:49:41Z",
   "charter_id": "site-agent-os-p2",
   "claims": [
     {
       "id": "git-version",
       "label": "仓库版本",
-      "text": "v0.5.1-14-gfdc7cc0",
+      "text": "v0.5.1-16-g6fe9582",
       "source": ".git/refs/tags",
       "sha256": "4fd36834e1e3af9885a5c75e7fe6c7acc0452faf8624729cb173edfb614024dd"
     },
@@ -61,16 +61,16 @@
     {
       "id": "pain-rollup",
       "label": "全局痛点汇总",
-      "text": "projects=2 pains=24 open=16 resolved=8 evidence_gaps=0",
+      "text": "projects=2 pains=25 open=17 resolved=8 evidence_gaps=0",
       "source": "tasks\\project-layer-p3-20260912\\task-evolve\\audit\\pain-rollup.json",
-      "sha256": "fb455e7ac55227d649c1907ed366f87539da6cb1d4074e63f01a22c9b72610b0"
+      "sha256": "1e7055af3c3c5114559556459aed6bf5674855e9663aa25b811c197adc023188"
     },
     {
       "id": "feedback-truth",
       "label": "真实世界反馈真值",
       "text": "issues=1 status=available v0.5.0_downloads=2 clones=count=55/uniques=25 delta=forks+0, open_issues+0, stars+0, v050_downloads+0, watchers+0",
       "source": "tasks\\project-layer-p2-20260912\\task-evolve\\truth\\feedback.json",
-      "sha256": "e91f7440392ad0645b433b4e4d56bb759756d7318227046e9fafdbb6143b95ea"
+      "sha256": "2a436bca098c0352c7d535f37b840d6ea705ccf3c520ce456607076fff126638"
     },
     {
       "id": "demo-data",
@@ -89,9 +89,9 @@
     {
       "id": "baby-diary",
       "label": "婴儿成长日记（脱敏聚合）",
-      "text": "cycles=36 events=539 autonomy=L3 selfmods=28+1 paper_value=102306.24",
+      "text": "cycles=44 events=777 autonomy=L3 selfmods=36+3 paper_value=109180.32",
       "source": "tasks\\project-layer-core-20260913\\task-evolve\\memory\\diary.json",
-      "sha256": "329fdb4d58e04c70d5ed077b755021b5fbcf346469c4dc36da89fd51a75acb26"
+      "sha256": "a11a3c0e53bfda643e06e15b03f2b25011f4a3bf6919496ce7eb533a59775e4b"
     }
   ],
   "gate": {
@@ -103,7 +103,7 @@
     "notes": []
   },
   "files": {
-    "index.html": "0b4ec14e0b4966c960c165d1977e4f077db6048b53f97f102d02c87219a682de",
-    "truth.json": "6e090db2661017a8254423ba9d388ae208b3fa0c5fb5e1a2b6952e4cc5019ba7"
+    "index.html": "ffbb11bf7a805c21fda299174ccee1f9e096d0c3bcb7906fe5b5cd44f9aed9d1",
+    "truth.json": "a59a46935358b76ca1f31de979e3d579f0275f6643a747af41c5c87e4de10b54"
   }
 }
