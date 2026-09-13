@@ -10,11 +10,11 @@ on:
       tag:
         description: '已发布 tag'
         required: true
-        default: 'v0.4.6'
+        default: 'v0.5.0'
       asset:
         description: '已发布资产文件名'
         required: true
-        default: 'agent-os-base-v0.4.6.zip'
+        default: 'agent-os-base-v0.5.0.zip'
 
 permissions:
   id-token: write
@@ -34,7 +34,7 @@ jobs:
           gh release download "${{ inputs.tag }}" --repo bobbyliuzh06/agent-os-base --pattern "${{ inputs.asset }}" --dir attest-work
       - name: Verify sha256 gate
         run: |
-          EXPECTED="910ab74b736f54c683c8ec03fcbcd2dacad63582304ed1366e351ca6b8b3b00a"
+          EXPECTED="33df73210072674ec812259ea456e8924c47218f85bc25139c318e1b315942dc"
           ACTUAL="$(sha256sum "${{ env.ASSET_PATH }}" | awk '{print $1}')"
           echo "ACTUAL=$ACTUAL"
           echo "EXPECTED=$EXPECTED"
