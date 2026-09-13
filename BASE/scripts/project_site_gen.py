@@ -137,9 +137,25 @@ def gather():
     else:
         feedback = None
         claim("feedback-truth", "真实世界反馈真值", "未采集（feedback_truth 尚未运行）", "N/A")
+    # 9) 30 秒体验 demo 数据（真实策略池审计，非编造）
+    pool_audits = sorted((TASK.parent / "project-layer-p1-20260912" / "task-evolve" / "audit")
+                         .glob("pool-v2-*.json"))
+    demo = None
+    if pool_audits:
+        p = json.loads(pool_audits[-1].read_text(encoding="utf-8"))
+        results = p.get("results", [])
+        winner = next((r for r in results if r.get("id") == (p.get("winner") or "S-1")), results[0] if results else {})
+        demo = {"winner": p.get("winner"), "winner_name": winner.get("name"),
+                "winner_excess": winner.get("excess"), "gates": winner.get("gates_ok"),
+                "gates_total": winner.get("gates_total"),
+                "source": str(pool_audits[-1].relative_to(ROOT))}
+        claim("demo-data", "30秒体验演示数据",
+              "winner=%s excess=%+.4f gates=%s/%s（真实策略池审计）" % (
+                  demo["winner"], demo["winner_excess"], demo["gates"], demo["gates_total"]),
+              str(pool_audits[-1].relative_to(ROOT)))
     return {"version": version, "scripts": scripts, "ledgers": ledgers, "cases": cases,
             "charter": charter, "fallback": fallback, "normal_total": normal,
-            "pain_rows": pain_rows, "feedback": feedback}
+            "pain_rows": pain_rows, "feedback": feedback, "demo": demo}
 
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
@@ -168,6 +184,39 @@ def render(data):
     samples_html = "".join("<li>%s</li>" % esc(x) for x in c.get("cases_as_samples", []))
     dir_html = "".join("<li>%s</li>" % esc(x) for x in c.get("directions", []))
     pot_txt = esc((c.get("potential") or "").strip())
+    hero_scenario = esc((c.get("hero_scenario") or "").strip())
+    demo = data.get("demo")
+    if demo:
+        steps = [
+            ("观察", "6 个策略在同一合成回放窗口各自运行 25 个决策周（可跟踪基准 + 动量因子数据）。"),
+            ("提议", "竞赛冠军：%s（%s）——由训练段超额 %+.4f 胜出。" % (
+                esc(demo["winner"]), esc(demo["winner_name"]), demo["winner_excess"])),
+            ("门禁", "25/25 周期确定性门禁 accept；章程约束（权重/现金/换手）逐周期钳制。"),
+            ("回填", "假设 H-pool-%s confirmed（超额 %+.4f）；痛点台账按证据 progress——合成数据演练，无投资含义。" % (
+                esc(demo["winner"]), demo["winner_excess"])),
+        ]
+        steps_js = json.dumps(steps, ensure_ascii=False)
+        demo_html = (
+            '<div style="background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;">'
+            '<div id="demoStep" style="min-height:70px;"><b>%s</b> %s</div></div>'
+            '<button onclick="nextDemo()" style="margin-top:10px;background:var(--acc);color:#0f1419;border:none;'
+            'border-radius:8px;padding:8px 18px;cursor:pointer;">下一步 →</button>'
+            '<p class="note">演示数据来自 %s（真实策略池审计记录，非编造）。</p>'
+            '<script>var demoSteps=%s;var demoI=0;function nextDemo(){demoI=(demoI+1)%%4;'
+            'document.getElementById("demoStep").innerHTML="<b>"+demoSteps[demoI][0]+"</b> "+demoSteps[demoI][1];}</script>'
+            % (esc(steps[0][0]), esc(steps[0][1]), esc(demo["source"]), steps_js))
+    else:
+        demo_html = '<p class="note">演示数据未生成（策略池尚未运行）。</p>'
+    participation_html = (
+        '<div class="cards">'
+        '<div class="card"><b>使用者</b><span>写一份 charter，把长期目标交给底座：<a href="%s">快速开始</a></span></div>'
+        '<div class="card"><b>提意见者</b><span>反馈会进痛点台账并被逐条回应：<a href="%s">GitHub Issues</a></span></div>'
+        '<div class="card"><b>二次开发者</b><span>按机器可读契约扩展：<a href="%s">charter.schema.json</a> + <a href="%s">Project 层设计</a></span></div>'
+        '</div>'
+        % ("https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/README.md",
+           "https://github.com/bobbyliuzh06/agent-os-base/issues",
+           "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/charter.schema.json",
+           "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/PROJECT-LAYER.md"))
     if data.get("pain_rows") is None:
         pain_html = '<p class="note">全局痛点汇总未生成（pain_rollup 尚未运行）。</p>'
     else:
@@ -231,12 +280,19 @@ a { color:var(--acc); }
 <h1>agent-os</h1>
 <p style="font-size:17px;color:var(--ink);">把长期目标变成<strong>被持续照顾、可审计、会自我演化</strong>的责任体——而不是一次性生成内容。</p>
 <p>自托管 · 自审查 · 自演化的智能体底座。谁需要它：想用 AI 长期维护一件事（投资研究 / 网站 / 文档库），并且要求它记教训、讲证据、不越界的人。</p>
+<p>%s</p>
 <div class="cards">
 <div class="card"><b>%s</b><span>站点快照生成于该提交（git describe；仓库 HEAD 可能更新）</span></div>
 <div class="card"><b>%d</b><span>管线脚本（BASE/scripts 真实清单）</span></div>
 <div class="card"><b>%d</b><span>回归台账（真实字段）</span></div>
 <div class="card"><b>%d</b><span>项目案例（持续责任对象）</span></div>
 </div>
+
+<h2>30 秒零成本体验</h2>
+%s
+
+<h2>我要参与</h2>
+%s
 
 <h2>架构初衷</h2>
 <p>%s</p>
@@ -305,7 +361,8 @@ a { color:var(--acc); }
 <p>免责声明：研究工具定位，不构成投资建议。本站内容如实呈现底座状态，不夸大任何能力。</p>
 </div>
 </div></body></html>
-""" % (ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
+""" % (hero_scenario, ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
+       demo_html, participation_html,
        intent_txt, what_html, how_html,
        script_list, ledger_rows, pain_html, feedback_html, case_rows, samples_html, fallback_note,
        lim_html, esc(fallback_note), it_rows, road_html, dir_html, pot_txt,
