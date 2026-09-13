@@ -169,10 +169,23 @@ def gather():
               "tasks/talk-*/（私有任务区，不公开路径）")
     else:
         claim("real-goal", "真实目标聚合状态（脱敏）", "尚未注册真实目标（agent-os talk 可用）", "N/A")
+    # 9c) 婴儿成长日记（脱敏聚合：任务区 diary.json，只发布过程指标）
+    diary = None
+    dp = ROOT / "tasks" / "project-layer-core-20260913" / "task-evolve" / "memory" / "diary.json"
+    if dp.exists():
+        diary = json.loads(dp.read_text(encoding="utf-8"))
+        claim("baby-diary", "婴儿成长日记（脱敏聚合）",
+              "cycles=%s events=%s autonomy=%s selfmods=%s+%s paper_value=%s" % (
+                  diary.get("cycles"), diary.get("events"), diary.get("autonomy"),
+                  diary.get("selfmods_nav"), diary.get("selfmods_cognition"),
+                  (diary.get("paper_portfolio") or {}).get("value")),
+              str(dp.relative_to(ROOT)))
+    else:
+        claim("baby-diary", "婴儿成长日记（脱敏聚合）", "未生成（baby_diary 尚未运行）", "N/A")
     return {"version": version, "scripts": scripts, "ledgers": ledgers, "cases": cases,
             "charter": charter, "fallback": fallback, "normal_total": normal,
             "pain_rows": pain_rows, "feedback": feedback, "demo": demo,
-            "real_goal": real_goal}
+            "real_goal": real_goal, "diary": diary}
 
 def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
@@ -233,6 +246,24 @@ def render(data):
            "https://github.com/bobbyliuzh06/agent-os-base/issues",
            "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/charter.schema.json",
            "https://github.com/bobbyliuzh06/agent-os-base/blob/main/BASE/docs/PROJECT-LAYER.md"))
+    dy = data.get("diary")
+    if dy:
+        pf = dy.get("paper_portfolio") or {}
+        diary_html = ('<p>周期 <b>%s</b> · 事件 <b>%s</b>（%s）· 世界 <b>%s</b> · 自主等级 <b>%s</b> · '
+                      '连续无事故 <b>%s</b> · 自改 <b>%s</b> 次（导航 %s + 认知 %s）· 影子运行 <b>%s</b> 次 · '
+                      '信号学习 <b>%s</b> 类 · 假设裁决 <b>%s</b> 条</p>'
+                      '<p>纸面组合（合成回放演练，无真实市场含义，不构成投资建议）：本金 100000 → 净值 '
+                      '<b>%s</b>（结算 %s 周期）</p>'
+                      '<p class="note">成长日记为脱敏聚合：目标内容与真值路径默认私有；数字来自真实运行记录。</p>'
+                      % (esc(dy.get("cycles")), esc(dy.get("events")), esc(dy.get("chain")),
+                         esc(",".join(dy.get("worlds", []))), esc(dy.get("autonomy")),
+                         esc(dy.get("consecutive_clean_cycles")), esc(dy.get("selfmods_nav")),
+                         esc(dy.get("selfmods_nav")), esc(dy.get("selfmods_cognition")),
+                         esc(dy.get("shadow_runs")), esc(dy.get("signals_learned")),
+                         esc(dy.get("hypotheses_confirmed")), esc(pf.get("value")),
+                         esc(pf.get("settled_cycles"))))
+    else:
+        diary_html = '<p class="note">婴儿成长日记未生成（baby_diary 尚未运行）。</p>'
     rg = data.get("real_goal")
     if rg:
         real_goal_html = ('<p>已注册真实目标 <b>%s</b> 个；健康检查周期 <b>%s</b> 次；最近检查：%s（%s）。</p>'
@@ -351,6 +382,9 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 <p class="note">台账解析失败项会原样记录错误，不掩盖。</p>
 </details>
 
+<h2>婴儿成长日记（脱敏）</h2>
+%s
+
 <h2>真实目标（talk 入口，可核验）</h2>
 %s
 
@@ -401,7 +435,7 @@ agent-os talk "帮我长期盯住一组重要链接"   # 自然语言 → charte
 """ % (hero_scenario, hero_human, ver, len(data["scripts"]), len(data["ledgers"]), len(data["cases"]),
        demo_html, participation_html,
        intent_txt, what_html, how_html,
-       script_list, ledger_rows, real_goal_html, pain_html, feedback_html, case_rows, samples_html, fallback_note,
+       script_list, ledger_rows, real_goal_html, diary_html, pain_html, feedback_html, case_rows, samples_html, fallback_note,
        lim_html, esc(fallback_note), it_rows, road_html, dir_html, pot_txt,
        c["feedback"]["channel"], now)
 
